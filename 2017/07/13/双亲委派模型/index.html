@@ -3,15 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>分类: jvm | Share</title>
+    <title>双亲委派模型 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Share">
-<meta property="og:url" content="https://kiddot.github.io/categories/jvm/index.html">
+    <meta name="description" content="双亲委派模型">
+<meta name="keywords" content="jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="双亲委派模型">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/13/双亲委派模型/index.html">
 <meta property="og:site_name" content="Share">
+<meta property="og:description" content="双亲委派模型">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/4.jpg">
+<meta property="og:updated_time" content="2017-12-13T13:57:21.076Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Share">
+<meta name="twitter:title" content="双亲委派模型">
+<meta name="twitter:description" content="双亲委派模型">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/4.jpg">
     
 
     
@@ -208,25 +215,29 @@
 </aside>
 
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-folder"></i></span>
-        <h1 class="title">jvm</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-双亲委派模型" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/4.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/13/双亲委派模型/">双亲委派模型</a>
+        <h1 class="article-title" itemprop="name">
+            双亲委派模型
         </h1>
     
 
-                <div class="article-meta">
-                    
+                
+                    <div class="article-meta">
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
         <a href="/2017/07/13/双亲委派模型/">
@@ -235,239 +246,163 @@
     </div>
 
 
-                    
+                        
     <div class="article-category">
     	<i class="fa fa-folder"></i>
         <a class="article-category-link" href="/categories/jvm/">jvm</a>
     </div>
 
-                    
+                        
     <div class="article-tag">
         <i class="fa fa-tag"></i>
         <a class="tag-link" href="/tags/jvm/">jvm</a>
     </div>
 
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                    </div>
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/13/类的加载/">类的加载</a>
-        </h1>
-    
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h1><a id="more"></a>
+<p>JVM预定义的三种类型类加载器：</p>
+<ul>
+<li><strong>启动（Bootstrap）类加载器</strong>：是用本地代码实现的类装入器，它负责将 <code>&lt;Java_Runtime_Home&gt;/lib</code>下面的类库加载到内存中（比如<code>rt.jar</code>）。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以不允许直接通过引用进行操作。</li>
+<li><strong>标准扩展（Extension）类加载器</strong>：是由 Sun 的 <code>ExtClassLoader（sun.misc.Launcher$ExtClassLoader）</code>实现的。它负责将<code>&lt; Java_Runtime_Home &gt;/lib/ext</code>或者由系统变量 <code>java.ext.dir</code>指定位置中的类库加载到内存中。开发者可以直接使用标准扩展类加载器。</li>
+<li><strong>系统（System）类加载器</strong>：是由 Sun 的 <code>AppClassLoader（sun.misc.Launcher$AppClassLoader）</code>实现的。它负责将系统类路径（<code>CLASSPATH</code>）中指定的类库加载到内存中。开发者可以直接使用系统类加载器。</li>
+</ul>
+<p>双亲委派机制描述 :</p>
+<ul>
+<li>某个特定的类加载器在接到加载类的请求时，首先将加载任务委托给父类加载器，<strong>依次递归</strong>，如果父类加载器可以完成类加载任务，就成功返回；只有父类加载器无法完成此加载任务时，才自己去加载。</li>
+</ul>
+<h1 id="几点思考"><a href="#几点思考" class="headerlink" title="几点思考"></a>几点思考</h1><ul>
+<li><p>Java虚拟机的第一个类加载器是Bootstrap，这个加载器很特殊，<strong>它不是Java类，因此它不需要被别人加载，它嵌套在Java虚拟机内核里面，也就是JVM启动的时候Bootstrap就已经启动，它是用C++写的二进制代码（不是字节码）</strong>，它可以去加载别的类。</p>
+<p>​</p>
+<p>这也是我们在测试时为什么发现<code>System.class.getClassLoader()</code>结果为null的原因，这并不表示System这个类没有类加载器，而是它的加载器比较特殊，是<code>BootstrapClassLoader</code>，由于它不是Java类，因此获得它的引用肯定返回null。</p>
+</li>
+</ul>
+<ul>
+<li>当Java虚拟机要加载一个类时，到底派出哪个类加载器去加载呢？<ul>
+<li>首先当前线程的类加载器去加载线程中的第一个类（假设为类A）。<br>注：当前线程的类加载器可以通过Thread类的getContextClassLoader()获得，也可以通过setContextClassLoader()自己设置类加载器。</li>
+<li>如果类A中引用了类B，Java虚拟机将使用加载类A的类加载器去加载类B。</li>
+<li>还可以直接调用<code>ClassLoader.loadClass()</code>方法来指定某个类加载器去加载某个类。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>委托机制的意义 — 防止内存中出现多份同样的字节码</strong> </p>
+<p>比如两个类A和类B都要加载System类：</p>
+<ul>
+<li>如果不用委托而是自己加载自己的，那么类A就会加载一份System字节码，然后类B又会加载一份System字节码，<strong>这样内存中就出现了两份System字节码。</strong></li>
+<li>如果使用委托机制，会递归的向父类查找，也就是<strong>首选用Bootstrap尝试加载</strong>，如果找不到再向下。这里的System就能在Bootstrap中找到然后加载，如果此时类B也要加载System，也从Bootstrap开始，此时<strong>Bootstrap发现已经加载过了System那么直接返回内存中的System即可而不需要重新加载</strong>，这样内存中就只有一份System的字节码了。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>是否能自己写一个System类？<ul>
+<li>不可以，因为<strong>类加载采用委托机制</strong>，这样可以保证爸爸们优先，爸爸们能找到的类，儿子就没有机会加载。而System类是Bootstrap加载器加载的，就算自己重写，也总是使用Java系统提供的System，<strong>自己写的System类根本没有机会得到加载。</strong></li>
+<li>但是，我们可以<strong>自己定义一个类加载器来达到这个目的</strong>，为了避免双亲委托机制，这个类加载器也必须是特殊的。由于系统自带的三个类加载器都加载特定目录下的类，如果我们自己的类加载器放在一个特殊的目录，那么系统的加载器就无法加载，也就是最终还是由我们自己的加载器加载。</li>
+</ul>
+</li>
+</ul>
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/07/13/类的加载/">
-            <time datetime="2017-07-13T10:51:22.000Z" itemprop="datePublished">2017-07-13</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
+        
         </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/12/GC的三种收集方法/">GC的三种收集方法</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/07/12/GC的三种收集方法/">
-            <time datetime="2017-07-12T07:51:22.000Z" itemprop="datePublished">2017-07-12</time>
-        </a>
-    </div>
+        <footer class="article-footer">
+            <div class="share-container">
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
 
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/11/Java对象存活分析/">Java对象存活分析</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/07/11/Java对象存活分析/">
-            <time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/06/30/对象的创建、布局与访问/">对象的创建、布局与访问</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/06/30/对象的创建、布局与访问/">
-            <time datetime="2017-06-30T10:51:22.000Z" itemprop="datePublished">2017-06-30</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/06/28/Java堆空间的分区/">Java堆空间的分区</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/06/28/Java堆空间的分区/">
-            <time datetime="2017-06-28T12:51:11.000Z" itemprop="datePublished">2017-06-28</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/06/28/JVM内存模型以及分区/">JVM内存模型以及分区</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/06/28/JVM内存模型以及分区/">
-            <time datetime="2017-06-28T10:51:22.000Z" itemprop="datePublished">2017-06-28</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
 </div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/07/13/双亲委派模型/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/13/双亲委派模型/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2017/07/13/类的加载/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">类的加载</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
 </section>
             
                 
@@ -653,11 +588,13 @@
     <script>
     var disqus_config = function () {
         
-        this.page.identifier = '';
+            this.page.url = 'https://kiddot.github.io/2017/07/13/双亲委派模型/';
+        
+        this.page.identifier = '双亲委派模型';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
-        s.src = '//' + 'kiddy0916' + '.disqus.com/count.js';
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();

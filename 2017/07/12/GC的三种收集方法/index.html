@@ -3,15 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>分类: jvm | Share</title>
+    <title>GC的三种收集方法 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Share">
-<meta property="og:url" content="https://kiddot.github.io/categories/jvm/index.html">
+    <meta name="description" content="GC的三种收集方法">
+<meta name="keywords" content="jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GC的三种收集方法">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/12/GC的三种收集方法/index.html">
 <meta property="og:site_name" content="Share">
+<meta property="og:description" content="GC的三种收集方法">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/1.jpg">
+<meta property="og:updated_time" content="2017-12-13T13:54:37.233Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Share">
+<meta name="twitter:title" content="GC的三种收集方法">
+<meta name="twitter:description" content="GC的三种收集方法">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/1.jpg">
     
 
     
@@ -208,97 +215,29 @@
 </aside>
 
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-folder"></i></span>
-        <h1 class="title">jvm</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-GC的三种收集方法" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/1.jpg" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/13/双亲委派模型/">双亲委派模型</a>
+        <h1 class="article-title" itemprop="name">
+            GC的三种收集方法
         </h1>
     
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/07/13/双亲委派模型/">
-            <time datetime="2017-07-13T14:22:11.000Z" itemprop="datePublished">2017-07-13</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/13/类的加载/">类的加载</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/07/13/类的加载/">
-            <time datetime="2017-07-13T10:51:22.000Z" itemprop="datePublished">2017-07-13</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/12/GC的三种收集方法/">GC的三种收集方法</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
+                    <div class="article-meta">
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
         <a href="/2017/07/12/GC的三种收集方法/">
@@ -307,167 +246,189 @@
     </div>
 
 
-                    
+                        
     <div class="article-category">
     	<i class="fa fa-folder"></i>
         <a class="article-category-link" href="/categories/jvm/">jvm</a>
     </div>
 
-                    
+                        
     <div class="article-tag">
         <i class="fa fa-tag"></i>
         <a class="tag-link" href="/tags/jvm/">jvm</a>
     </div>
 
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                    </div>
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/07/11/Java对象存活分析/">Java对象存活分析</a>
-        </h1>
-    
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="GC的三种收集方法"><a href="#GC的三种收集方法" class="headerlink" title="GC的三种收集方法"></a>GC的三种收集方法</h1><a id="more"></a>
+<h2 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h2><p>分两个阶段</p>
+<ul>
+<li>标记：首先标记出所有需要回收的对象</li>
+<li>清除：在标记完成后统一回收所有被标记的对象。</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>回收特别快</li>
+</ul>
+<p>两个不足：</p>
+<ul>
+<li>效率问题，标记与清除两个过程效率不高</li>
+<li>空间问题，标记清除之后会产生大量的不连续内存碎片</li>
+</ul>
+<p>适合使用：</p>
+<ul>
+<li>老年代的回收</li>
+</ul>
+<h2 id="标记整理"><a href="#标记整理" class="headerlink" title="标记整理"></a>标记整理</h2><p>分三个阶段：</p>
+<ul>
+<li>标记：首先标记出所有需要回收的对象</li>
+<li>整理：让所有存活的对象都向一边移动</li>
+<li>清除：直接就清除端边界以外的内存</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>回收以后的空间连续</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>整理要花一定时间</li>
+</ul>
+<p>适合使用：</p>
+<ul>
+<li>老年代的回收</li>
+</ul>
+<h2 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h2><p>思路：</p>
+<ul>
+<li>将内存分成原始的相等的两份，每次只使用一部分</li>
+<li>用完一部分，就将还存活的对象复制到另外一块内存</li>
+<li>最后将要回收的内存全部清除</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>实现简单</li>
+<li>运行高效</li>
+</ul>
+<p>不足：</p>
+<ul>
+<li>将原来的内存缩小了一半</li>
+<li>在存活对象比较多时，要进行较多的复制操作，效率会变低</li>
+</ul>
+<p>适合使用：</p>
+<ul>
+<li>新生代的回收</li>
+</ul>
+<h1 id="优化收集方法"><a href="#优化收集方法" class="headerlink" title="优化收集方法"></a>优化收集方法</h1><h2 id="对复制算法的优化"><a href="#对复制算法的优化" class="headerlink" title="对复制算法的优化"></a>对复制算法的优化</h2><p>​    不是将两块内存分配同等大小，可以将存活率低的区域大一些，而让回收后存活的对象所占的区域小一些，不够的内存由老年代的内存来保证，这样复制算法的空闲的空间减少了。</p>
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/07/11/Java对象存活分析/">
-            <time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
+        
         </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/06/30/对象的创建、布局与访问/">对象的创建、布局与访问</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/06/30/对象的创建、布局与访问/">
-            <time datetime="2017-06-30T10:51:22.000Z" itemprop="datePublished">2017-06-30</time>
-        </a>
-    </div>
+        <footer class="article-footer">
+            <div class="share-container">
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
 
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/06/28/Java堆空间的分区/">Java堆空间的分区</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/06/28/Java堆空间的分区/">
-            <time datetime="2017-06-28T12:51:11.000Z" itemprop="datePublished">2017-06-28</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2017/06/28/JVM内存模型以及分区/">JVM内存模型以及分区</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/2017/06/28/JVM内存模型以及分区/">
-            <time datetime="2017-06-28T10:51:22.000Z" itemprop="datePublished">2017-06-28</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
 </div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/07/12/GC的三种收集方法/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/12/GC的三种收集方法/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/07/13/类的加载/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    类的加载
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/07/11/Java对象存活分析/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Java对象存活分析</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
 </section>
             
                 
@@ -653,11 +614,13 @@
     <script>
     var disqus_config = function () {
         
-        this.page.identifier = '';
+            this.page.url = 'https://kiddot.github.io/2017/07/12/GC的三种收集方法/';
+        
+        this.page.identifier = 'GC的三种收集方法';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
-        s.src = '//' + 'kiddy0916' + '.disqus.com/count.js';
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();
