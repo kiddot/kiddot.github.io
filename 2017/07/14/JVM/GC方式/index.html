@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>GC的三种收集方法 | Share</title>
+    <title>GC方式 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="GC的三种收集方法">
+    <meta name="description" content="GC方式">
 <meta name="keywords" content="jvm">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GC的三种收集方法">
-<meta property="og:url" content="https://kiddot.github.io/2017/07/12/JVM/GC的三种收集方法/index.html">
+<meta property="og:title" content="GC方式">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/14/JVM/GC方式/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="GC的三种收集方法">
+<meta property="og:description" content="GC方式">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/1.jpg">
-<meta property="og:updated_time" content="2017-12-13T13:54:37.233Z">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/4.jpg">
+<meta property="og:updated_time" content="2017-12-13T14:10:15.138Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GC的三种收集方法">
-<meta name="twitter:description" content="GC的三种收集方法">
-<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/1.jpg">
+<meta name="twitter:title" content="GC方式">
+<meta name="twitter:description" content="GC方式">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/4.jpg">
     
 
     
@@ -215,12 +215,12 @@
 </aside>
 
             
-            <section id="main"><article id="post-JVM/GC的三种收集方法" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-JVM/GC方式" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             
 	
-		<img src="http://oeu3kvs3k.bkt.clouddn.com/1.jpg" class="article-banner" />
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/4.jpg" class="article-banner" />
 	
 
 
@@ -231,7 +231,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            GC的三种收集方法
+            GC方式
         </h1>
     
 
@@ -240,8 +240,8 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/07/12/JVM/GC的三种收集方法/">
-            <time datetime="2017-07-12T07:51:22.000Z" itemprop="datePublished">2017-07-12</time>
+        <a href="/2017/07/14/JVM/GC方式/">
+            <time datetime="2017-07-14T14:22:11.000Z" itemprop="datePublished">2017-07-14</time>
         </a>
     </div>
 
@@ -266,64 +266,62 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="GC的三种收集方法"><a href="#GC的三种收集方法" class="headerlink" title="GC的三种收集方法"></a>GC的三种收集方法</h1><a id="more"></a>
-<h2 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h2><p>分两个阶段</p>
+            <h1 id="GC方式"><a href="#GC方式" class="headerlink" title="GC方式"></a>GC方式</h1><a id="more"></a>
+<h2 id="Minor-GC"><a href="#Minor-GC" class="headerlink" title="Minor GC"></a>Minor GC</h2><p>新生代(由 Eden and Survivor 组成)的垃圾收集叫做Minor GC。注意：</p>
 <ul>
-<li>标记：首先标记出所有需要回收的对象</li>
-<li>清除：在标记完成后统一回收所有被标记的对象。</li>
+<li><strong>当jvm 无法为新建对象分配内存空间的时候Minor GC被触发</strong>，例如新生代空间被占满。因此新生代空间占用率越高，Minor GC越频繁。</li>
+<li>当空间被占满，它下面的所有对象都会被复制，而且堆顶指针从空闲空间的零位置移动。因此取代传统的标记清除压缩算法，去清理Eden区和Survivor区，因此Eden和Survivor区无内存碎片产生。</li>
+<li>在Minor GC期间,实际上Tenured区被忽略，实际上Tenured区引用young区的对象被当作GC roots。在标记期间young区引用的Tenured区对象的对象会被忽略。</li>
+<li>反对所有Minor GC都会触发“stop-the-world”这一观点。在大多数应用中，忽略”stop-the-world”停留时长。不可否认的是新生代中的一些对象被错误当成垃圾而不会被移动到Survivor/Old区。</li>
 </ul>
-<p>特点：</p>
+<h2 id="Major-GC"><a href="#Major-GC" class="headerlink" title="Major GC"></a>Major GC</h2><blockquote>
+<p>​    Major GC清理Tenured区，但是HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了且明确的定义，所以对于Major GC需要问清楚是指full GC还是old GC。</p>
+</blockquote>
+<h2 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h2><blockquote>
+<p>收集整个堆，包括young gen、old gen、perm gen</p>
+</blockquote>
+<hr>
+<h2 id="针对HotSpot-VM的实现，它里面的GC其实准确分类只有两大种："><a href="#针对HotSpot-VM的实现，它里面的GC其实准确分类只有两大种：" class="headerlink" title="针对HotSpot VM的实现，它里面的GC其实准确分类只有两大种："></a>针对HotSpot VM的实现，它里面的GC其实准确分类只有两大种：</h2><ul>
+<li><p>Partial GC：并不收集整个GC堆的模式</p>
+</li>
+<li><ul>
+<li>Young GC：只收集young gen的GC</li>
+<li>Old GC：只收集old gen的GC。只有CMS的concurrent collection是这个模式</li>
+<li>Mixed GC：收集整个young gen以及部分old gen的GC。只有G1有这个模式</li>
+</ul>
+</li>
+<li><p>Full GC：收集整个堆，包括young gen、old gen、perm gen（如果存在的话）等所有部分的模式。</p>
+</li>
+</ul>
+<p>Major GC通常是跟full GC是等价的，收集整个GC堆。但因为HotSpot VM发展了这么多年，外界对各种名词的解读已经完全混乱了，当有人说“major GC”的时候一定要问清楚他想要指的是上面的full GC还是old GC。</p>
 <ul>
-<li>回收特别快</li>
+<li>young GC：当young gen中的eden区分配满的时候触发。注意young GC中有部分存活对象会晋升到old gen，所以young GC后old gen的占用量通常会有所升高。</li>
+<li>full GC：当准备要触发一次young GC时，如果发现统计数据说之前young GC的平均晋升大小比目前old gen剩余的空间大，则不会触发young GC而是转为触发full GC（因为HotSpot VM的GC里，除了CMS的concurrent collection之外，其它能收集old gen的GC都会同时收集整个GC堆，包括young gen，所以不需要事先触发一次单独的young GC）；或者，如果有perm gen的话，要在perm gen分配空间但已经没有足够空间时，也要触发一次full GC；或者System.gc()、heap dump带GC，默认也是触发full GC。</li>
 </ul>
-<p>两个不足：</p>
+<h2 id="Minor、Full-GC触发条件"><a href="#Minor、Full-GC触发条件" class="headerlink" title="Minor、Full GC触发条件"></a>Minor、Full GC触发条件</h2><p><strong>Minor GC触发条件</strong>：当Eden区满时，触发Minor GC。</p>
+<p><strong>Full GC触发条件</strong>：</p>
+<p>（1）调用System.gc时，系统建议执行Full GC，但是不必然执行</p>
+<p>（2）老年代空间不足</p>
+<p>（3）方法区空间不足</p>
+<p>（4）通过Minor GC后进入老年代的平均大小大于老年代的可用内存</p>
+<p>（5）由Eden区、From Space区向To Space区复制时，对象大小大于To Space可用内存，则把该对象转存到老年代，且老年代的可用内存小于该对象大小</p>
+<h2 id="回收对象"><a href="#回收对象" class="headerlink" title="回收对象"></a>回收对象</h2><blockquote>
+<p>​    <strong>对于用可达性分析法搜索不到的对象，GC并不一定会回收该对象</strong>。要完全回收一个对象，至少需要经过<strong>两次标记</strong>的过程。</p>
 <ul>
-<li>效率问题，标记与清除两个过程效率不高</li>
-<li>空间问题，标记清除之后会产生大量的不连续内存碎片</li>
+<li><strong>第一次标记</strong>：对于一个没有其他引用的对象，筛选该对象是否有必要执行finalize()方法，如果没有执行必要，则意味可直接回收。</li>
+<li><strong>第二次标记</strong>：如果被筛选判定位有必要执行，则会放入FQueue队列，并自动创建一个低优先级的finalize线程来执行释放操作。如果在一个对象释放前被其他对象引用，则该对象会被移除FQueue队列。</li>
 </ul>
-<p>适合使用：</p>
-<ul>
-<li>老年代的回收</li>
+</blockquote>
+<h2 id="Full-GC为什么那么慢"><a href="#Full-GC为什么那么慢" class="headerlink" title="Full GC为什么那么慢"></a>Full GC为什么那么慢</h2><ul>
+<li>元数据区的回收算法效率低，虚拟机规范Class回收条件比较苛刻</li>
+<li>Full GC回收新生代、老年代、元数据区/永久代。从这个角度讲，多回收了方法区，增加了总的回收耗时。</li>
+<li>​</li>
 </ul>
-<h2 id="标记整理"><a href="#标记整理" class="headerlink" title="标记整理"></a>标记整理</h2><p>分三个阶段：</p>
-<ul>
-<li>标记：首先标记出所有需要回收的对象</li>
-<li>整理：让所有存活的对象都向一边移动</li>
-<li>清除：直接就清除端边界以外的内存</li>
+<h2 id="为什么Yong-GC比Old-GC慢？"><a href="#为什么Yong-GC比Old-GC慢？" class="headerlink" title="为什么Yong GC比Old GC慢？"></a>为什么Yong GC比Old GC慢？</h2><ul>
+<li>新生代复制算法比较快。Eden区回收时直接全部清空，存活的对象存放到内存容量比较小的s1，少了解决内存碎片整理  加上直接copy的速度，效率很高。</li>
+<li>（牺牲时间换空间）老年代标记清除算法会导致内存碎片化，因此就引入了标记整理算法，执行完毕后，存活的对象会按序放置，移动对象的内存地址（重点），来解决碎片化，但是执行时间较长。</li>
+<li>​</li>
 </ul>
-<p>特点：</p>
-<ul>
-<li>回收以后的空间连续</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>整理要花一定时间</li>
-</ul>
-<p>适合使用：</p>
-<ul>
-<li>老年代的回收</li>
-</ul>
-<h2 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h2><p>思路：</p>
-<ul>
-<li>将内存分成原始的相等的两份，每次只使用一部分</li>
-<li>用完一部分，就将还存活的对象复制到另外一块内存</li>
-<li>最后将要回收的内存全部清除</li>
-</ul>
-<p>特点：</p>
-<ul>
-<li>实现简单</li>
-<li>运行高效</li>
-</ul>
-<p>不足：</p>
-<ul>
-<li>将原来的内存缩小了一半</li>
-<li>在存活对象比较多时，要进行较多的复制操作，效率会变低</li>
-</ul>
-<p>适合使用：</p>
-<ul>
-<li>新生代的回收</li>
-</ul>
-<h1 id="优化收集方法"><a href="#优化收集方法" class="headerlink" title="优化收集方法"></a>优化收集方法</h1><h2 id="对复制算法的优化"><a href="#对复制算法的优化" class="headerlink" title="对复制算法的优化"></a>对复制算法的优化</h2><p>​    不是将两块内存分配同等大小，可以将存活率低的区域大一些，而让回收后存活的对象所占的区域小一些，不够的内存由老年代的内存来保证，这样复制算法的空闲的空间减少了。</p>
 
         
         </div>
@@ -389,7 +387,7 @@
 
             
     
-        <a href="https://kiddot.github.io/2017/07/12/JVM/GC的三种收集方法/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/12/JVM/GC的三种收集方法/">评论</a>
+        <a href="https://kiddot.github.io/2017/07/14/JVM/GC方式/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/14/JVM/GC方式/">评论</a>
     
 
         </footer>
@@ -398,19 +396,10 @@
         
 <nav id="article-nav">
     
-        <a href="/2017/07/13/JVM/类的加载/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    类的加载
-                
-            </div>
-        </a>
     
-    
-        <a href="/2017/07/11/JVM/Java对象存活分析/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2017/07/13/JVM/双亲委派模型/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">Java对象存活分析</div>
+            <div class="article-nav-title">双亲委派模型</div>
         </a>
     
 </nav>
@@ -614,9 +603,9 @@
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'https://kiddot.github.io/2017/07/12/JVM/GC的三种收集方法/';
+            this.page.url = 'https://kiddot.github.io/2017/07/14/JVM/GC方式/';
         
-        this.page.identifier = 'JVM/GC的三种收集方法';
+        this.page.identifier = 'JVM/GC方式';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
