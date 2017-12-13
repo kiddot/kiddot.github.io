@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>Java对象存活分析 | Share</title>
+    <title>Java堆空间的分区 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
+    <meta name="description" content="Java堆空间的分区">
 <meta name="keywords" content="jvm">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java对象存活分析">
-<meta property="og:url" content="https://kiddot.github.io/2017/07/11/Java对象存活分析/index.html">
+<meta property="og:title" content="Java堆空间的分区">
+<meta property="og:url" content="https://kiddot.github.io/2017/06/28/JVM/Java堆空间的分区/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
+<meta property="og:description" content="Java堆空间的分区">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs">
-<meta property="og:updated_time" content="2017-12-13T13:53:34.178Z">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/7.jpg">
+<meta property="og:updated_time" content="2017-12-13T13:57:38.968Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java对象存活分析">
-<meta name="twitter:description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
-<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs">
+<meta name="twitter:title" content="Java堆空间的分区">
+<meta name="twitter:description" content="Java堆空间的分区">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/7.jpg">
     
 
     
@@ -215,12 +215,12 @@
 </aside>
 
             
-            <section id="main"><article id="post-Java对象存活分析" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-JVM/Java堆空间的分区" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             
 	
-		<img src="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs" class="article-banner" />
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/7.jpg" class="article-banner" />
 	
 
 
@@ -231,7 +231,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            Java对象存活分析
+            Java堆空间的分区
         </h1>
     
 
@@ -240,8 +240,8 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/07/11/Java对象存活分析/">
-            <time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time>
+        <a href="/2017/06/28/JVM/Java堆空间的分区/">
+            <time datetime="2017-06-28T12:51:11.000Z" itemprop="datePublished">2017-06-28</time>
         </a>
     </div>
 
@@ -266,37 +266,49 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="Java对象存活分析"><a href="#Java对象存活分析" class="headerlink" title="Java对象存活分析"></a>Java对象存活分析</h1><blockquote>
-<p>​    判断对象是否存活有两种比较常见的方法：<strong>引用计数法</strong>与<strong>可达性分析算法</strong>。</p>
-</blockquote>
-<a id="more"></a>
-<h2 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h2><blockquote>
-<p>​    引用计数法的逻辑非常简单，但是存在问题，java并不采用这种方式进行对象存活判断。</p>
-</blockquote>
-<p>​    引用计数法的逻辑是：在堆中存储对象时，在对象头处维护一个counter计数器，如果一个对象增加了一个引用与之相连，则将counter++。如果一个引用关系失效则counter–。如果一个对象的counter变为0，则说明该对象已经被废弃，不处于存活状态。</p>
-<p>这种方法来标记对象的状态会存在很多问题：</p>
-<blockquote>
-<p>jdk从1.2开始增加了多种引用方式：软引用、弱引用、虚引用，且在不同引用情况下程序应进行不同的操作。如果我们只采用一个引用计数法来计数无法准确的区分这么多种引用的情况。</p>
-</blockquote>
-<p>除了引用计数法无法解决多种类型引用的问题，循环持有问题才是致命的问题。比如:</p>
-<blockquote>
-<p>如果一个对象A持有对象B，而对象B也持有一个对象A，那发生了类似操作系统中死锁的循环持有，这种情况下A与B的counter恒大于1，会使得GC永远无法回收这两个对象。</p>
-</blockquote>
-<h2 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h2><p>​    这个算法的<strong>基本思路</strong>就是通过一系列名为<strong>GC Roots</strong>的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的。</p>
-<p>如下情况的对象可以作为GC Roots：</p>
+            <h1 id="Java堆空间的分区"><a href="#Java堆空间的分区" class="headerlink" title="Java堆空间的分区"></a>Java堆空间的分区</h1><a id="more"></a>
+<p><img src="http://oeu3kvs3k.bkt.clouddn.com/584866-20170426175411428-34722603.png" alt="img"></p>
+<p><img src="http://oeu3kvs3k.bkt.clouddn.com/3404074161-5846861718596_articlex.png" alt="img"></p>
+<h2 id="Eden区"><a href="#Eden区" class="headerlink" title="Eden区"></a>Eden区</h2><ul>
+<li>Eden区位于Java堆的年轻代，是<strong>新对象</strong>分配内存的地方，由于堆是所有线程共享的，因此在堆上分配内存需要加锁。而Sun JDK为提升效率，会为每个新建的线程在Eden上分配一块独立的空间由该线程独享，这块空间称为TLAB（Thread Local Allocation Buffer）。在TLAB上分配内存不需要加锁，因此JVM在给线程中的对象分配内存时会尽量在TLAB上分配。如果对象过大或TLAB用完，则仍然在堆上进行分配。如果Eden区内存也用完了，则会进行一次Minor GC（young GC）。</li>
+</ul>
+<h2 id="Survival-from-to"><a href="#Survival-from-to" class="headerlink" title="Survival from to"></a><strong>Survival from to</strong></h2><ul>
+<li>Survival区与Eden区相同都在Java堆的年轻代。Survival区有两块，一块称为from区，另一块为to区，这两个区是相对的，在发生一次Minor GC后，from区就会和to区互换。在发生Minor GC时，Eden区和Survivalfrom区会把一些仍然存活的对象复制进Survival to区，并清除内存。Survival to区会把一些存活得足够旧的对象移至年老代。</li>
+</ul>
+<h2 id="老年代"><a href="#老年代" class="headerlink" title="老年代"></a>老年代</h2><ul>
+<li>老年代里存放的都是存活时间较久的，大小较大的对象，因此年老代使用标记整理算法。当年老代容量满的时候，会触发一次Major GC（full GC），回收年老代和年轻代中不再被使用的对象资源。</li>
+</ul>
+<h1 id="扩展一"><a href="#扩展一" class="headerlink" title="扩展一"></a>扩展一</h1><h2 id="一、逃逸分析和TLAB"><a href="#一、逃逸分析和TLAB" class="headerlink" title="一、逃逸分析和TLAB"></a>一、逃逸分析和TLAB</h2><hr>
+<p>扩展：new出来的对象并不都是被分配在堆上。但是Java中的<strong>逃逸分析</strong>和<strong>TLAB</strong>，可以认为一定会分配在堆上。</p>
+<p>TLAB：</p>
 <ul>
-<li>虚拟机栈(栈桢中的本地变量表)中的引用的对象</li>
-<li>方法区中的类静态属性引用的对象</li>
-<li>方法区中的常量引用的对象</li>
-<li>本地方法栈中JNI（Native方法）的引用的对象</li>
+<li>JVM在内存新生代Eden Space中开辟了一小块线程私有的区域，称作TLAB（Thread-local allocation buffer）。默认设定为占用Eden Space的1%。<strong>在Java程序中很多对象都是小对象且用过即丢，它们不存在线程共享也适合被快速GC</strong>，所以对于小对象通常JVM会优先分配在TLAB上，并且TLAB上的分配由于是线程私有所以没有锁开销。</li>
 </ul>
-<h1 id="HotSpot虚拟机如何实现可达性算法？"><a href="#HotSpot虚拟机如何实现可达性算法？" class="headerlink" title="HotSpot虚拟机如何实现可达性算法？"></a>HotSpot虚拟机如何实现可达性算法？</h1><h2 id="使用OopMap记录并枚举根节点"><a href="#使用OopMap记录并枚举根节点" class="headerlink" title="使用OopMap记录并枚举根节点"></a>使用OopMap记录并枚举根节点</h2><ul>
-<li>HotSpot首先需要枚举所有的GC Roots根节点，虚拟机栈的空间不大，遍历一次的时间或许可以接受，但是方法区的空间很可能就有数百兆，遍历一次需要很久。更加关键的是，当我们遍历所有GC Roots根节点时，我们需要暂停所有用户线程，因为我们需要一个此时此刻的”虚拟机快照”，如果我们不暂停用户线程，那么虚拟机仍处于运行状态，我们无法确保能够正确遍历所有的根节点。所以此时的时间开销过大更是我们不能接受的。</li>
-<li>基于这种情况，HotSpot实现了一种叫做OopMap的数据结构，这种数据结构在类加载完成时把对象内的偏移量是什么类型计算出，并且存放下位置，当需要遍历根结点时访问所有OopMap即可。</li>
+<hr>
+<h2 id="二、Java对象分配的过程"><a href="#二、Java对象分配的过程" class="headerlink" title="二、Java对象分配的过程"></a>二、Java对象分配的过程</h2><ul>
+<li>编译器通过逃逸分析，确定对象是在栈上分配还是在堆上分配。如果是在堆上分配，则进入选项2.</li>
+<li>如果tlab_top + size &lt;= tlab_end，则在在TLAB上直接分配对象并增加tlab_top 的值，如果现有的TLAB不足以存放当前对象则3.</li>
+<li>重新申请一个TLAB，并再次尝试存放当前对象。如果放不下，则4.</li>
+<li>在Eden区加锁（这个区是多线程共享的），如果eden_top + size &lt;= eden_end则将对象存放在Eden区，增加eden_top 的值，如果Eden区不足以存放，则5.</li>
+<li>执行一次Young GC（minor collection）。</li>
+<li>经过Young GC之后，如果Eden区任然不足以存放当前对象，则直接分配到老年代。</li>
 </ul>
-<h2 id="用安全点Safepoint约束根节点"><a href="#用安全点Safepoint约束根节点" class="headerlink" title="用安全点Safepoint约束根节点"></a>用安全点Safepoint约束根节点</h2><ul>
-<li>如果将每个符合GC Roots条件的对象都存放进入OopMap中，那么OopMap也会变得很大，而且其中很多对象很可能会发生一些变化，这些变化使得维护这个映射表很困难。实际上，HotSpot并没有为每一个对象都创建OopMap，只在特定的位置上创建了这些信息，这些位置称为安全点（Safepoints）。</li>
-<li>为了保证虚拟机中安全点的个数不算太多也不是太少，主要决定安全点是否被建立的因素是时间。当进行了耗时的操作时，比如方法调用、循环跳转等时会产生安全点。</li>
+<hr>
+<h1 id="扩展二"><a href="#扩展二" class="headerlink" title="扩展二"></a>扩展二</h1><h2 id="JVM-新生代为何需要两个-Survivor-空间？"><a href="#JVM-新生代为何需要两个-Survivor-空间？" class="headerlink" title="JVM 新生代为何需要两个 Survivor 空间？"></a>JVM 新生代为何需要两个 Survivor 空间？</h2><h3 id="为什么不是0个-Survivor-空间？"><a href="#为什么不是0个-Survivor-空间？" class="headerlink" title="为什么不是0个 Survivor 空间？"></a>为什么不是0个 Survivor 空间？</h3><ul>
+<li>如果没有 Survivor 空间的话，垃圾收集将会怎样进行：一遍新生代 gc 过后，不管三七二十一，活着的对象全部进入老年代，即便它在接下来的几次 gc 过程中极有可能被回收掉。这样的话老年代很快被填满， Full GC 的频率大大增加。我们知道，老年代一般都会被规划成比新生代大很多，对它进行垃圾收集会消耗比较长的时间；如果收集的频率又很快的话，那就更糟糕了。基于这种考虑，虚拟机引进了“幸存区”的概念：如果对象在某次新生代 gc 之后任然存活，让它暂时进入幸存区；以后每熬过一次 gc ，让对象的年龄＋1，直到其年龄达到某个设定的值（比如15岁）， JVM 认为它很有可能是个“老不死的”对象，再呆在幸存区没有必要（而且老是在两个幸存区之间反复地复制也需要消耗资源），才会把它转移到老年代。</li>
+<li>设置 Survivor 空间的目的是让那些中等寿命的对象尽量在 Minor GC 时被干掉，最终在总体上减少虚拟机的垃圾收集过程对用户程序的影响。</li>
+</ul>
+<h3 id="为什么不是1个-Survivor-空间？"><a href="#为什么不是1个-Survivor-空间？" class="headerlink" title="为什么不是1个 Survivor 空间？"></a>为什么不是1个 Survivor 空间？</h3><ul>
+<li>新生代一般都采用复制算法进行垃圾收集。原始的复制算法是把一块内存一分为二， gc 时把存活的对象从一块空间（From space）复制到另外一块空间（To space），再把原先的那块内存（From space）清理干净，最后调换 From space 和 To space 的逻辑角色</li>
+<li>在 HotSpot 虚拟机里， Eden 空间和 Survivor 空间默认的比例是 8:1 。我们来看看在只有一个 Survivor 空间的情况下，这个 8:1 会有什么问题。此处为了方便说明，我们假设新生代一共为 9 MB 。对象优先在 Eden 区分配，当 Eden 空间满 8 MB 时，触发第一次 Minor GC 。比如说有 0.5 MB 的对象存活，那这 0.5 MB 的对象将由 Eden 区向 Survivor 区复制。这次 Minor GC 过后， Eden 区被清理干净， Survivor 区被占用了 0.5 MB ，还剩 0.5 MB 。到这里一切都很美好，但问题马上就来了：从现在开始所有对象将会在这剩下的 0.5 MB 的空间上被分配，很快就会发现空间不足，于是只好触发下一次 Minor GC 。可以看出在这种情况下，当 Survivor 空间作为对象“出生地”的时候，很容易触发 Minor GC ，这种 8:1 的不对称分配不但没能在总体上降低 Minor GC 的频率，还会把 gc 的时间间隔搞得很不平均。</li>
+</ul>
+<h3 id="为什么2个-Survivor-空间可以达到要求？"><a href="#为什么2个-Survivor-空间可以达到要求？" class="headerlink" title="为什么2个 Survivor 空间可以达到要求？"></a>为什么2个 Survivor 空间可以达到要求？</h3><ul>
+<li>我们把 Eden : From Survivor : To Survivor 空间大小设成 8 : 1 : 1 ，对象总是在 Eden 区出生， From Survivor 保存当前的幸存对象， To Survivor 为空。一次 gc 发生后：</li>
+</ul>
+<ul>
+<li>1）Eden 区活着的对象 ＋ From Survivor 存储的对象被复制到 To Survivor ；</li>
+<li>2) 清空 Eden 和 From Survivor ；</li>
+<li>3) 颠倒 From Survivor 和 To Survivor 的逻辑关系： From 变 To ， To 变 From 。</li>
 </ul>
 
         
@@ -363,7 +375,7 @@
 
             
     
-        <a href="https://kiddot.github.io/2017/07/11/Java对象存活分析/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/11/Java对象存活分析/">评论</a>
+        <a href="https://kiddot.github.io/2017/06/28/JVM/Java堆空间的分区/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/06/28/JVM/Java堆空间的分区/">评论</a>
     
 
         </footer>
@@ -372,19 +384,19 @@
         
 <nav id="article-nav">
     
-        <a href="/2017/07/12/GC的三种收集方法/" id="article-nav-newer" class="article-nav-link-wrap">
+        <a href="/2017/06/30/JVM/对象的创建、布局与访问/" id="article-nav-newer" class="article-nav-link-wrap">
             <strong class="article-nav-caption">上一篇</strong>
             <div class="article-nav-title">
                 
-                    GC的三种收集方法
+                    对象的创建、布局与访问
                 
             </div>
         </a>
     
     
-        <a href="/2017/06/30/对象的创建、布局与访问/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2017/06/28/JVM/JVM内存模型以及分区/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">对象的创建、布局与访问</div>
+            <div class="article-nav-title">JVM内存模型以及分区</div>
         </a>
     
 </nav>
@@ -417,7 +429,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/13/双亲委派模型/" class="thumbnail">
+                            <a href="/2017/07/13/JVM/双亲委派模型/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/4.jpg)" alt="双亲委派模型" class="thumbnail-image"></span>
@@ -428,7 +440,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/13/双亲委派模型/" class="title">双亲委派模型</a></p>
+                            <p class="item-title"><a href="/2017/07/13/JVM/双亲委派模型/" class="title">双亲委派模型</a></p>
                             <p class="item-date"><time datetime="2017-07-13T14:22:11.000Z" itemprop="datePublished">2017-07-13</time></p>
                         </div>
                     </li>
@@ -436,7 +448,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/13/类的加载/" class="thumbnail">
+                            <a href="/2017/07/13/JVM/类的加载/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs)" alt="类的加载" class="thumbnail-image"></span>
@@ -447,7 +459,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/13/类的加载/" class="title">类的加载</a></p>
+                            <p class="item-title"><a href="/2017/07/13/JVM/类的加载/" class="title">类的加载</a></p>
                             <p class="item-date"><time datetime="2017-07-13T10:51:22.000Z" itemprop="datePublished">2017-07-13</time></p>
                         </div>
                     </li>
@@ -455,7 +467,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/12/GC的三种收集方法/" class="thumbnail">
+                            <a href="/2017/07/12/JVM/GC的三种收集方法/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/1.jpg)" alt="GC的三种收集方法" class="thumbnail-image"></span>
@@ -466,7 +478,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/12/GC的三种收集方法/" class="title">GC的三种收集方法</a></p>
+                            <p class="item-title"><a href="/2017/07/12/JVM/GC的三种收集方法/" class="title">GC的三种收集方法</a></p>
                             <p class="item-date"><time datetime="2017-07-12T07:51:22.000Z" itemprop="datePublished">2017-07-12</time></p>
                         </div>
                     </li>
@@ -474,7 +486,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/11/Java对象存活分析/" class="thumbnail">
+                            <a href="/2017/07/11/JVM/Java对象存活分析/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs)" alt="Java对象存活分析" class="thumbnail-image"></span>
@@ -485,7 +497,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/11/Java对象存活分析/" class="title">Java对象存活分析</a></p>
+                            <p class="item-title"><a href="/2017/07/11/JVM/Java对象存活分析/" class="title">Java对象存活分析</a></p>
                             <p class="item-date"><time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time></p>
                         </div>
                     </li>
@@ -493,7 +505,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/06/30/对象的创建、布局与访问/" class="thumbnail">
+                            <a href="/2017/06/30/JVM/对象的创建、布局与访问/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/6.jpg)" alt="对象的创建、布局与访问" class="thumbnail-image"></span>
@@ -504,7 +516,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/06/30/对象的创建、布局与访问/" class="title">对象的创建、布局与访问</a></p>
+                            <p class="item-title"><a href="/2017/06/30/JVM/对象的创建、布局与访问/" class="title">对象的创建、布局与访问</a></p>
                             <p class="item-date"><time datetime="2017-06-30T10:51:22.000Z" itemprop="datePublished">2017-06-30</time></p>
                         </div>
                     </li>
@@ -588,9 +600,9 @@
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'https://kiddot.github.io/2017/07/11/Java对象存活分析/';
+            this.page.url = 'https://kiddot.github.io/2017/06/28/JVM/Java堆空间的分区/';
         
-        this.page.identifier = 'Java对象存活分析';
+        this.page.identifier = 'JVM/Java堆空间的分区';
     };
     (function() { 
         var d = document, s = d.createElement('script');  

@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>Java堆空间的分区 | Share</title>
+    <title>双亲委派模型 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Java堆空间的分区">
+    <meta name="description" content="双亲委派模型">
 <meta name="keywords" content="jvm">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java堆空间的分区">
-<meta property="og:url" content="https://kiddot.github.io/2017/06/28/Java堆空间的分区/index.html">
+<meta property="og:title" content="双亲委派模型">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/13/JVM/双亲委派模型/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="Java堆空间的分区">
+<meta property="og:description" content="双亲委派模型">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/7.jpg">
-<meta property="og:updated_time" content="2017-12-13T13:57:38.968Z">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/4.jpg">
+<meta property="og:updated_time" content="2017-12-13T13:57:21.076Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java堆空间的分区">
-<meta name="twitter:description" content="Java堆空间的分区">
-<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/7.jpg">
+<meta name="twitter:title" content="双亲委派模型">
+<meta name="twitter:description" content="双亲委派模型">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/4.jpg">
     
 
     
@@ -215,12 +215,12 @@
 </aside>
 
             
-            <section id="main"><article id="post-Java堆空间的分区" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-JVM/双亲委派模型" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             
 	
-		<img src="http://oeu3kvs3k.bkt.clouddn.com/7.jpg" class="article-banner" />
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/4.jpg" class="article-banner" />
 	
 
 
@@ -231,7 +231,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            Java堆空间的分区
+            双亲委派模型
         </h1>
     
 
@@ -240,8 +240,8 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/06/28/Java堆空间的分区/">
-            <time datetime="2017-06-28T12:51:11.000Z" itemprop="datePublished">2017-06-28</time>
+        <a href="/2017/07/13/JVM/双亲委派模型/">
+            <time datetime="2017-07-13T14:22:11.000Z" itemprop="datePublished">2017-07-13</time>
         </a>
     </div>
 
@@ -266,49 +266,46 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="Java堆空间的分区"><a href="#Java堆空间的分区" class="headerlink" title="Java堆空间的分区"></a>Java堆空间的分区</h1><a id="more"></a>
-<p><img src="http://oeu3kvs3k.bkt.clouddn.com/584866-20170426175411428-34722603.png" alt="img"></p>
-<p><img src="http://oeu3kvs3k.bkt.clouddn.com/3404074161-5846861718596_articlex.png" alt="img"></p>
-<h2 id="Eden区"><a href="#Eden区" class="headerlink" title="Eden区"></a>Eden区</h2><ul>
-<li>Eden区位于Java堆的年轻代，是<strong>新对象</strong>分配内存的地方，由于堆是所有线程共享的，因此在堆上分配内存需要加锁。而Sun JDK为提升效率，会为每个新建的线程在Eden上分配一块独立的空间由该线程独享，这块空间称为TLAB（Thread Local Allocation Buffer）。在TLAB上分配内存不需要加锁，因此JVM在给线程中的对象分配内存时会尽量在TLAB上分配。如果对象过大或TLAB用完，则仍然在堆上进行分配。如果Eden区内存也用完了，则会进行一次Minor GC（young GC）。</li>
-</ul>
-<h2 id="Survival-from-to"><a href="#Survival-from-to" class="headerlink" title="Survival from to"></a><strong>Survival from to</strong></h2><ul>
-<li>Survival区与Eden区相同都在Java堆的年轻代。Survival区有两块，一块称为from区，另一块为to区，这两个区是相对的，在发生一次Minor GC后，from区就会和to区互换。在发生Minor GC时，Eden区和Survivalfrom区会把一些仍然存活的对象复制进Survival to区，并清除内存。Survival to区会把一些存活得足够旧的对象移至年老代。</li>
-</ul>
-<h2 id="老年代"><a href="#老年代" class="headerlink" title="老年代"></a>老年代</h2><ul>
-<li>老年代里存放的都是存活时间较久的，大小较大的对象，因此年老代使用标记整理算法。当年老代容量满的时候，会触发一次Major GC（full GC），回收年老代和年轻代中不再被使用的对象资源。</li>
-</ul>
-<h1 id="扩展一"><a href="#扩展一" class="headerlink" title="扩展一"></a>扩展一</h1><h2 id="一、逃逸分析和TLAB"><a href="#一、逃逸分析和TLAB" class="headerlink" title="一、逃逸分析和TLAB"></a>一、逃逸分析和TLAB</h2><hr>
-<p>扩展：new出来的对象并不都是被分配在堆上。但是Java中的<strong>逃逸分析</strong>和<strong>TLAB</strong>，可以认为一定会分配在堆上。</p>
-<p>TLAB：</p>
+            <h1 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h1><a id="more"></a>
+<p>JVM预定义的三种类型类加载器：</p>
 <ul>
-<li>JVM在内存新生代Eden Space中开辟了一小块线程私有的区域，称作TLAB（Thread-local allocation buffer）。默认设定为占用Eden Space的1%。<strong>在Java程序中很多对象都是小对象且用过即丢，它们不存在线程共享也适合被快速GC</strong>，所以对于小对象通常JVM会优先分配在TLAB上，并且TLAB上的分配由于是线程私有所以没有锁开销。</li>
+<li><strong>启动（Bootstrap）类加载器</strong>：是用本地代码实现的类装入器，它负责将 <code>&lt;Java_Runtime_Home&gt;/lib</code>下面的类库加载到内存中（比如<code>rt.jar</code>）。由于引导类加载器涉及到虚拟机本地实现细节，开发者无法直接获取到启动类加载器的引用，所以不允许直接通过引用进行操作。</li>
+<li><strong>标准扩展（Extension）类加载器</strong>：是由 Sun 的 <code>ExtClassLoader（sun.misc.Launcher$ExtClassLoader）</code>实现的。它负责将<code>&lt; Java_Runtime_Home &gt;/lib/ext</code>或者由系统变量 <code>java.ext.dir</code>指定位置中的类库加载到内存中。开发者可以直接使用标准扩展类加载器。</li>
+<li><strong>系统（System）类加载器</strong>：是由 Sun 的 <code>AppClassLoader（sun.misc.Launcher$AppClassLoader）</code>实现的。它负责将系统类路径（<code>CLASSPATH</code>）中指定的类库加载到内存中。开发者可以直接使用系统类加载器。</li>
 </ul>
-<hr>
-<h2 id="二、Java对象分配的过程"><a href="#二、Java对象分配的过程" class="headerlink" title="二、Java对象分配的过程"></a>二、Java对象分配的过程</h2><ul>
-<li>编译器通过逃逸分析，确定对象是在栈上分配还是在堆上分配。如果是在堆上分配，则进入选项2.</li>
-<li>如果tlab_top + size &lt;= tlab_end，则在在TLAB上直接分配对象并增加tlab_top 的值，如果现有的TLAB不足以存放当前对象则3.</li>
-<li>重新申请一个TLAB，并再次尝试存放当前对象。如果放不下，则4.</li>
-<li>在Eden区加锁（这个区是多线程共享的），如果eden_top + size &lt;= eden_end则将对象存放在Eden区，增加eden_top 的值，如果Eden区不足以存放，则5.</li>
-<li>执行一次Young GC（minor collection）。</li>
-<li>经过Young GC之后，如果Eden区任然不足以存放当前对象，则直接分配到老年代。</li>
+<p>双亲委派机制描述 :</p>
+<ul>
+<li>某个特定的类加载器在接到加载类的请求时，首先将加载任务委托给父类加载器，<strong>依次递归</strong>，如果父类加载器可以完成类加载任务，就成功返回；只有父类加载器无法完成此加载任务时，才自己去加载。</li>
 </ul>
-<hr>
-<h1 id="扩展二"><a href="#扩展二" class="headerlink" title="扩展二"></a>扩展二</h1><h2 id="JVM-新生代为何需要两个-Survivor-空间？"><a href="#JVM-新生代为何需要两个-Survivor-空间？" class="headerlink" title="JVM 新生代为何需要两个 Survivor 空间？"></a>JVM 新生代为何需要两个 Survivor 空间？</h2><h3 id="为什么不是0个-Survivor-空间？"><a href="#为什么不是0个-Survivor-空间？" class="headerlink" title="为什么不是0个 Survivor 空间？"></a>为什么不是0个 Survivor 空间？</h3><ul>
-<li>如果没有 Survivor 空间的话，垃圾收集将会怎样进行：一遍新生代 gc 过后，不管三七二十一，活着的对象全部进入老年代，即便它在接下来的几次 gc 过程中极有可能被回收掉。这样的话老年代很快被填满， Full GC 的频率大大增加。我们知道，老年代一般都会被规划成比新生代大很多，对它进行垃圾收集会消耗比较长的时间；如果收集的频率又很快的话，那就更糟糕了。基于这种考虑，虚拟机引进了“幸存区”的概念：如果对象在某次新生代 gc 之后任然存活，让它暂时进入幸存区；以后每熬过一次 gc ，让对象的年龄＋1，直到其年龄达到某个设定的值（比如15岁）， JVM 认为它很有可能是个“老不死的”对象，再呆在幸存区没有必要（而且老是在两个幸存区之间反复地复制也需要消耗资源），才会把它转移到老年代。</li>
-<li>设置 Survivor 空间的目的是让那些中等寿命的对象尽量在 Minor GC 时被干掉，最终在总体上减少虚拟机的垃圾收集过程对用户程序的影响。</li>
-</ul>
-<h3 id="为什么不是1个-Survivor-空间？"><a href="#为什么不是1个-Survivor-空间？" class="headerlink" title="为什么不是1个 Survivor 空间？"></a>为什么不是1个 Survivor 空间？</h3><ul>
-<li>新生代一般都采用复制算法进行垃圾收集。原始的复制算法是把一块内存一分为二， gc 时把存活的对象从一块空间（From space）复制到另外一块空间（To space），再把原先的那块内存（From space）清理干净，最后调换 From space 和 To space 的逻辑角色</li>
-<li>在 HotSpot 虚拟机里， Eden 空间和 Survivor 空间默认的比例是 8:1 。我们来看看在只有一个 Survivor 空间的情况下，这个 8:1 会有什么问题。此处为了方便说明，我们假设新生代一共为 9 MB 。对象优先在 Eden 区分配，当 Eden 空间满 8 MB 时，触发第一次 Minor GC 。比如说有 0.5 MB 的对象存活，那这 0.5 MB 的对象将由 Eden 区向 Survivor 区复制。这次 Minor GC 过后， Eden 区被清理干净， Survivor 区被占用了 0.5 MB ，还剩 0.5 MB 。到这里一切都很美好，但问题马上就来了：从现在开始所有对象将会在这剩下的 0.5 MB 的空间上被分配，很快就会发现空间不足，于是只好触发下一次 Minor GC 。可以看出在这种情况下，当 Survivor 空间作为对象“出生地”的时候，很容易触发 Minor GC ，这种 8:1 的不对称分配不但没能在总体上降低 Minor GC 的频率，还会把 gc 的时间间隔搞得很不平均。</li>
-</ul>
-<h3 id="为什么2个-Survivor-空间可以达到要求？"><a href="#为什么2个-Survivor-空间可以达到要求？" class="headerlink" title="为什么2个 Survivor 空间可以达到要求？"></a>为什么2个 Survivor 空间可以达到要求？</h3><ul>
-<li>我们把 Eden : From Survivor : To Survivor 空间大小设成 8 : 1 : 1 ，对象总是在 Eden 区出生， From Survivor 保存当前的幸存对象， To Survivor 为空。一次 gc 发生后：</li>
+<h1 id="几点思考"><a href="#几点思考" class="headerlink" title="几点思考"></a>几点思考</h1><ul>
+<li><p>Java虚拟机的第一个类加载器是Bootstrap，这个加载器很特殊，<strong>它不是Java类，因此它不需要被别人加载，它嵌套在Java虚拟机内核里面，也就是JVM启动的时候Bootstrap就已经启动，它是用C++写的二进制代码（不是字节码）</strong>，它可以去加载别的类。</p>
+<p>​</p>
+<p>这也是我们在测试时为什么发现<code>System.class.getClassLoader()</code>结果为null的原因，这并不表示System这个类没有类加载器，而是它的加载器比较特殊，是<code>BootstrapClassLoader</code>，由于它不是Java类，因此获得它的引用肯定返回null。</p>
+</li>
 </ul>
 <ul>
-<li>1）Eden 区活着的对象 ＋ From Survivor 存储的对象被复制到 To Survivor ；</li>
-<li>2) 清空 Eden 和 From Survivor ；</li>
-<li>3) 颠倒 From Survivor 和 To Survivor 的逻辑关系： From 变 To ， To 变 From 。</li>
+<li>当Java虚拟机要加载一个类时，到底派出哪个类加载器去加载呢？<ul>
+<li>首先当前线程的类加载器去加载线程中的第一个类（假设为类A）。<br>注：当前线程的类加载器可以通过Thread类的getContextClassLoader()获得，也可以通过setContextClassLoader()自己设置类加载器。</li>
+<li>如果类A中引用了类B，Java虚拟机将使用加载类A的类加载器去加载类B。</li>
+<li>还可以直接调用<code>ClassLoader.loadClass()</code>方法来指定某个类加载器去加载某个类。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>委托机制的意义 — 防止内存中出现多份同样的字节码</strong> </p>
+<p>比如两个类A和类B都要加载System类：</p>
+<ul>
+<li>如果不用委托而是自己加载自己的，那么类A就会加载一份System字节码，然后类B又会加载一份System字节码，<strong>这样内存中就出现了两份System字节码。</strong></li>
+<li>如果使用委托机制，会递归的向父类查找，也就是<strong>首选用Bootstrap尝试加载</strong>，如果找不到再向下。这里的System就能在Bootstrap中找到然后加载，如果此时类B也要加载System，也从Bootstrap开始，此时<strong>Bootstrap发现已经加载过了System那么直接返回内存中的System即可而不需要重新加载</strong>，这样内存中就只有一份System的字节码了。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>是否能自己写一个System类？<ul>
+<li>不可以，因为<strong>类加载采用委托机制</strong>，这样可以保证爸爸们优先，爸爸们能找到的类，儿子就没有机会加载。而System类是Bootstrap加载器加载的，就算自己重写，也总是使用Java系统提供的System，<strong>自己写的System类根本没有机会得到加载。</strong></li>
+<li>但是，我们可以<strong>自己定义一个类加载器来达到这个目的</strong>，为了避免双亲委托机制，这个类加载器也必须是特殊的。由于系统自带的三个类加载器都加载特定目录下的类，如果我们自己的类加载器放在一个特殊的目录，那么系统的加载器就无法加载，也就是最终还是由我们自己的加载器加载。</li>
+</ul>
+</li>
 </ul>
 
         
@@ -375,7 +372,7 @@
 
             
     
-        <a href="https://kiddot.github.io/2017/06/28/Java堆空间的分区/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/06/28/Java堆空间的分区/">评论</a>
+        <a href="https://kiddot.github.io/2017/07/13/JVM/双亲委派模型/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/13/JVM/双亲委派模型/">评论</a>
     
 
         </footer>
@@ -384,19 +381,10 @@
         
 <nav id="article-nav">
     
-        <a href="/2017/06/30/对象的创建、布局与访问/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    对象的创建、布局与访问
-                
-            </div>
-        </a>
     
-    
-        <a href="/2017/06/28/JVM内存模型以及分区/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2017/07/13/JVM/类的加载/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">JVM内存模型以及分区</div>
+            <div class="article-nav-title">类的加载</div>
         </a>
     
 </nav>
@@ -429,7 +417,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/13/双亲委派模型/" class="thumbnail">
+                            <a href="/2017/07/13/JVM/双亲委派模型/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/4.jpg)" alt="双亲委派模型" class="thumbnail-image"></span>
@@ -440,7 +428,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/13/双亲委派模型/" class="title">双亲委派模型</a></p>
+                            <p class="item-title"><a href="/2017/07/13/JVM/双亲委派模型/" class="title">双亲委派模型</a></p>
                             <p class="item-date"><time datetime="2017-07-13T14:22:11.000Z" itemprop="datePublished">2017-07-13</time></p>
                         </div>
                     </li>
@@ -448,7 +436,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/13/类的加载/" class="thumbnail">
+                            <a href="/2017/07/13/JVM/类的加载/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs)" alt="类的加载" class="thumbnail-image"></span>
@@ -459,7 +447,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/13/类的加载/" class="title">类的加载</a></p>
+                            <p class="item-title"><a href="/2017/07/13/JVM/类的加载/" class="title">类的加载</a></p>
                             <p class="item-date"><time datetime="2017-07-13T10:51:22.000Z" itemprop="datePublished">2017-07-13</time></p>
                         </div>
                     </li>
@@ -467,7 +455,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/12/GC的三种收集方法/" class="thumbnail">
+                            <a href="/2017/07/12/JVM/GC的三种收集方法/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/1.jpg)" alt="GC的三种收集方法" class="thumbnail-image"></span>
@@ -478,7 +466,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/12/GC的三种收集方法/" class="title">GC的三种收集方法</a></p>
+                            <p class="item-title"><a href="/2017/07/12/JVM/GC的三种收集方法/" class="title">GC的三种收集方法</a></p>
                             <p class="item-date"><time datetime="2017-07-12T07:51:22.000Z" itemprop="datePublished">2017-07-12</time></p>
                         </div>
                     </li>
@@ -486,7 +474,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/07/11/Java对象存活分析/" class="thumbnail">
+                            <a href="/2017/07/11/JVM/Java对象存活分析/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs)" alt="Java对象存活分析" class="thumbnail-image"></span>
@@ -497,7 +485,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/07/11/Java对象存活分析/" class="title">Java对象存活分析</a></p>
+                            <p class="item-title"><a href="/2017/07/11/JVM/Java对象存活分析/" class="title">Java对象存活分析</a></p>
                             <p class="item-date"><time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time></p>
                         </div>
                     </li>
@@ -505,7 +493,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/06/30/对象的创建、布局与访问/" class="thumbnail">
+                            <a href="/2017/06/30/JVM/对象的创建、布局与访问/" class="thumbnail">
     
     
         <span style="background-image:url(http://oeu3kvs3k.bkt.clouddn.com/6.jpg)" alt="对象的创建、布局与访问" class="thumbnail-image"></span>
@@ -516,7 +504,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/jvm/">jvm</a></p>
-                            <p class="item-title"><a href="/2017/06/30/对象的创建、布局与访问/" class="title">对象的创建、布局与访问</a></p>
+                            <p class="item-title"><a href="/2017/06/30/JVM/对象的创建、布局与访问/" class="title">对象的创建、布局与访问</a></p>
                             <p class="item-date"><time datetime="2017-06-30T10:51:22.000Z" itemprop="datePublished">2017-06-30</time></p>
                         </div>
                     </li>
@@ -600,9 +588,9 @@
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'https://kiddot.github.io/2017/06/28/Java堆空间的分区/';
+            this.page.url = 'https://kiddot.github.io/2017/07/13/JVM/双亲委派模型/';
         
-        this.page.identifier = 'Java堆空间的分区';
+        this.page.identifier = 'JVM/双亲委派模型';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
