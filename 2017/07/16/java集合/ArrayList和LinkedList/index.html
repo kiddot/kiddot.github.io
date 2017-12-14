@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>对象的创建、布局与访问 | Share</title>
+    <title>ArrayList和LinkedList | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="对象的创建、布局与访问">
-<meta name="keywords" content="jvm">
+    <meta name="description" content="ArrayList和LinkedList">
+<meta name="keywords" content="java集合">
 <meta property="og:type" content="article">
-<meta property="og:title" content="对象的创建、布局与访问">
-<meta property="og:url" content="https://kiddot.github.io/2017/06/30/JVM/对象的创建、布局与访问/index.html">
+<meta property="og:title" content="ArrayList和LinkedList">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/16/java集合/ArrayList和LinkedList/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="对象的创建、布局与访问">
+<meta property="og:description" content="ArrayList和LinkedList">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/6.jpg">
-<meta property="og:updated_time" content="2017-12-13T13:57:58.632Z">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/5.jpg">
+<meta property="og:updated_time" content="2017-12-14T06:28:19.813Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="对象的创建、布局与访问">
-<meta name="twitter:description" content="对象的创建、布局与访问">
-<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/6.jpg">
+<meta name="twitter:title" content="ArrayList和LinkedList">
+<meta name="twitter:description" content="ArrayList和LinkedList">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/5.jpg">
     
 
     
@@ -215,12 +215,12 @@
 </aside>
 
             
-            <section id="main"><article id="post-JVM/对象的创建、布局与访问" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-java集合/ArrayList和LinkedList" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             
 	
-		<img src="http://oeu3kvs3k.bkt.clouddn.com/6.jpg" class="article-banner" />
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/5.jpg" class="article-banner" />
 	
 
 
@@ -231,7 +231,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            对象的创建、布局与访问
+            ArrayList和LinkedList
         </h1>
     
 
@@ -240,8 +240,8 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/06/30/JVM/对象的创建、布局与访问/">
-            <time datetime="2017-06-30T10:51:22.000Z" itemprop="datePublished">2017-06-30</time>
+        <a href="/2017/07/16/java集合/ArrayList和LinkedList/">
+            <time datetime="2017-07-16T15:21:11.000Z" itemprop="datePublished">2017-07-16</time>
         </a>
     </div>
 
@@ -249,13 +249,13 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
+        <a class="article-category-link" href="/categories/java集合/">java集合</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
+        <a class="tag-link" href="/tags/java集合/">java集合</a>
     </div>
 
                     </div>
@@ -266,63 +266,36 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="对象的创建、布局与访问"><a href="#对象的创建、布局与访问" class="headerlink" title="对象的创建、布局与访问"></a>对象的创建、布局与访问</h1><a id="more"></a>
-<h2 id="一、创建"><a href="#一、创建" class="headerlink" title="一、创建"></a>一、创建</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> People();</span><br></pre></td></tr></table></figure>
-<p>这行代码背后的JVM操作：</p>
-<h3 id="类加载检查"><a href="#类加载检查" class="headerlink" title="类加载检查"></a>类加载检查</h3><p>​    检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，那必须先执行相应的类的加载过程</p>
-<h3 id="为对象分配内存"><a href="#为对象分配内存" class="headerlink" title="为对象分配内存"></a>为对象分配内存</h3><blockquote>
-<p>​    对象所需内存的大小在类加载完成后便完全确定，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来</p>
-</blockquote>
-<p>​    <strong>根据Java堆中是否有规整有两种内存的分配方式：</strong></p>
-<h4 id="指针分配"><a href="#指针分配" class="headerlink" title="指针分配"></a>指针分配</h4><ul>
-<li>Java堆中的内存是规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，分配内存也就是把指针向空闲空间那边移动一段与内存大小相等的距离。</li>
+            <h1 id="ArrayList和LinkedList"><a href="#ArrayList和LinkedList" class="headerlink" title="ArrayList和LinkedList"></a>ArrayList和LinkedList</h1><a id="more"></a>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><ol>
+<li>ArrayList是实现了<strong>基于动态数组</strong>的数据结构，而LinkedList是<strong>基于链表</strong>的数据结构；</li>
+<li>对于<strong>随机访问get和set，ArrayList要优于LinkedList</strong>，因为LinkedList要移动指针；</li>
+<li>对于添加和删除操作add和remove，一般大家都会说LinkedList要比ArrayList快，因为ArrayList要移动数据。但是实际情况并非这样，对于添加或删除，LinkedList和ArrayList<strong>并不能明确说明谁快谁慢</strong></li>
+</ol>
+<h4 id="get"><a href="#get" class="headerlink" title="get"></a>get</h4><ul>
+<li>ArrayList想要get(int index)元素时，直接返回index位置上的元素，而LinkedList需要通过for循环进行查找，虽然LinkedList已经在查找方法上做了优化，比如index &lt; size / 2，则从左边开始查找，反之从右边开始查找，但是还是比ArrayList要慢。这点是毋庸置疑的。</li>
 </ul>
-<h4 id="空闲列表"><a href="#空闲列表" class="headerlink" title="空闲列表"></a>空闲列表</h4><ul>
-<li>Java堆中的内存不是规整的，已使用的内存和空闲的内存相互交错。虚拟机必须维护一张列表，记录哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录。</li>
+<h4 id="insert-or-remove"><a href="#insert-or-remove" class="headerlink" title="insert or remove"></a>insert or remove</h4><ul>
+<li>ArrayList想要在指定位置插入或删除元素时，主要耗时的是System.arraycopy动作，会移动index后面所有的元素；LinkedList主耗时的是要先通过for循环找到index，然后直接插入或删除。这就导致了两者并非一定谁快谁慢。 <strong>主要有两个因素决定他们的效率，插入的数据量和插入的位置。</strong></li>
 </ul>
-<h4 id="分配内存时解决并发问题的两种方案"><a href="#分配内存时解决并发问题的两种方案" class="headerlink" title="分配内存时解决并发问题的两种方案"></a>分配内存时解决并发问题的两种方案</h4><blockquote>
-<p>​    对象创建在虚拟机中时非常频繁的行为，即使是仅仅修改一个指针指向的位置，在并发情况下也并不是线程安全的，可能出现正在给对象A分配内存，指针还没来得及修改，对象B又同时使用了原来的指针来分配内存的情况</p>
-</blockquote>
-<ul>
-<li>对分配内存空间的动作进行<strong>同步处理</strong></li>
-<li>把内存分配的动作按照线程划分为在不同的空间之中进行，即每个线程在Java堆中预先分配一小块内存，称为本地线程分配缓冲(<strong>TLAB</strong>)</li>
+<h4 id="ArrayList扩容问题"><a href="#ArrayList扩容问题" class="headerlink" title="ArrayList扩容问题"></a>ArrayList扩容问题</h4><ul>
+<li>ArrayList使用一个内置的数组来存储元素，这个数组的起始容量是10.当数组需要增长时，新的容量按如下公式获得：新容量=(旧容量<em>3)/2+1，也就是说每一次容量大概会增长50%。这就意味着，如果你有一个包含大量元素的ArrayList对象，那么最终将有很大的空间会被浪费掉，这个浪费是由ArrayList的工作方式本身造成的。如果没有足够的空间来存放新的元素，数组将不得不被重新进行分配以便能够增加新的元素。<em>*对数组进行重新分配，将会导致性能急剧下降。</em></em></li>
 </ul>
-<h3 id="内存空间初始化"><a href="#内存空间初始化" class="headerlink" title="内存空间初始化"></a>内存空间初始化</h3><ul>
-<li>虚拟机将分配到的内存空间都初始化为零值（不包括对象头）,如果使用了TLAB，这一工作过程也可以提前至TLAB分配时进行。</li>
-<li>内存空间初始化保证了对象的实例字段在Java代码中可以不赋初始值就直接使用，程序能访问到这些字段的数据类型所对应的零值。</li>
-</ul>
-<h3 id="对象设置"><a href="#对象设置" class="headerlink" title="对象设置"></a>对象设置</h3><p>​    虚拟机对对象进行必要的设置，例如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息。<strong>这些信息存放在对象的对象头</strong>之中。</p>
-<h3 id=""><a href="#" class="headerlink" title=""></a><init></init></h3><ul>
-<li>在上面的工作都完成之后，从虚拟机的角度看，一个新的对象已经产生了。</li>
-<li>但是从Java程序的角度看，对象的创建才刚刚开始<init>方法还没有执行，所有的字段都还是零。</init></li>
-<li>一般来说，执行new指令之后会接着执行<init>方法，把对象按照程序员的意愿进行初始化，这样一个真正可用的对象才算产生出来。</init></li>
-</ul>
-<h2 id="二、对象内存的布局"><a href="#二、对象内存的布局" class="headerlink" title="二、对象内存的布局"></a>二、对象内存的布局</h2><blockquote>
-<p>​    在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：<strong>对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)</strong>。</p>
-</blockquote>
-<h4 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h4><blockquote>
-<p>HotSpot虚拟机的对象头包括两部分信息</p>
-</blockquote>
-<ul>
-<li>第一部分用于存储<strong>对象自身</strong>的<strong>运行时数据</strong>，如哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等</li>
-<li>另外一个部分是<strong>类型指针</strong>，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。</li>
-</ul>
-<h4 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h4><blockquote>
-<p>​    实例数据部分是对象真正存储的有效信息，也是在程序代码中所定义的各种类型的字段内容。</p>
-</blockquote>
-<h4 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h4><blockquote>
-<p>​    对齐填充并不是必然存在的，也没有特定的含义，仅仅起着占位符的作用。</p>
-</blockquote>
-<h2 id="三、对象的访问定位"><a href="#三、对象的访问定位" class="headerlink" title="三、对象的访问定位"></a>三、对象的访问定位</h2><blockquote>
-<p>​    建立对象是为了使用对象，我们的Java程序需要通过栈上的引用数据来操作堆上的具体对象。</p>
-</blockquote>
-<p>目前主流的访问方式有使用句柄和直接指针两种。</p>
-<h3 id="使用句柄"><a href="#使用句柄" class="headerlink" title="使用句柄"></a>使用句柄</h3><p>​    如果使用句柄的话，那么Java堆中将会划分出一块内存来作为句柄池，引用中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自的具体地址信息。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/650075-de394a099da4d82d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/657" alt="img"></p>
-<h3 id="直接指针"><a href="#直接指针" class="headerlink" title="直接指针"></a>直接指针</h3><p>​    如果使用直接指针访问，那么Java堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，而引用中存储的直接就是对象地址。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/650075-ad6dae62f3e1658b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/659" alt="img"></p>
-<p><strong>优势：速度更快，节省了一次指针定位的时间开销。</strong>（由于对象的访问在Java中非常频繁，因此这类开销积少成多后也是非常可观的执行成本）</p>
-
+<h1 id="回答梳理"><a href="#回答梳理" class="headerlink" title="回答梳理"></a>回答梳理</h1><h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><p>都是java集合框架，都实现List接口</p>
+<h2 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h2><ol>
+<li>ArrayList是实现了<strong>基于动态数组</strong>的数据结构，它使用索引在数组中搜索和读取数据是很快的。Array获取数据的时间复杂度是O(1),但是要删除数据却是开销很大的，因为这需要重排数组中的所有数据。</li>
+<li>LinkedList是<strong>基于链表</strong>的数据结构，对于添加和删除操作add和remove，一般大家都会说LinkedList要比ArrayList快，因为ArrayList要移动数据。但是实际情况并非这样，对于添加或删除，LinkedList和ArrayList<strong>并不能明确说明谁快谁慢</strong></li>
+<li>LinkedList需要更多的内存，因为ArrayList的每个索引的位置是实际的数据，而LinkedList中的每个节点中存储的是实际的数据和前后节点的位置。</li>
+</ol>
+<h2 id="效率"><a href="#效率" class="headerlink" title="效率"></a>效率</h2><p>ArrayList：</p>
+<p>​    1.<strong>内部的Object类型的影响</strong> ，对于值类型来说，往ArrayList里面添加和修改元素，都会引起装箱和拆箱的操作，频繁的操作可能会影响一部分效率。</p>
+<p>​    2.<strong>数组扩容</strong> ，扩容操作往往会导致不必要的空间浪费，尽量去评估自己需要的容量</p>
+<p>​    3.<strong>频繁的调用IndexOf、Contains等方法</strong>（Sort、BinarySearch等方法经过优化，不在此列）引起的效率损失 </p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>使用LinkList的场景：</p>
+<p>​    1.不会随机访问数据。因为如果你需要LinkedList中的第n个元素的时候，你需要从第一个元素顺序数到第n个数据，然后读取数据。</p>
+<p>​    2.插入和删除元素的操作比较多，读取数据比较少的情况。因为插入和删除元素不涉及重排数据，所以它要比ArrayList要快。</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>多线问题</p>
+<h4 id="ArrayList中的操作不是线程安全的。所以，建议在单线程中才使用ArrayList，而在多线程中可以选择CopyOnWriteArrayList。"><a href="#ArrayList中的操作不是线程安全的。所以，建议在单线程中才使用ArrayList，而在多线程中可以选择CopyOnWriteArrayList。" class="headerlink" title="ArrayList中的操作不是线程安全的。所以，建议在单线程中才使用ArrayList，而在多线程中可以选择CopyOnWriteArrayList。"></a>ArrayList中的操作不是线程安全的。所以，建议在单线程中才使用ArrayList，而在多线程中可以选择CopyOnWriteArrayList。</h4>
         
         </div>
         <footer class="article-footer">
@@ -387,7 +360,7 @@
 
             
     
-        <a href="https://kiddot.github.io/2017/06/30/JVM/对象的创建、布局与访问/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/06/30/JVM/对象的创建、布局与访问/">评论</a>
+        <a href="https://kiddot.github.io/2017/07/16/java集合/ArrayList和LinkedList/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/16/java集合/ArrayList和LinkedList/">评论</a>
     
 
         </footer>
@@ -396,19 +369,10 @@
         
 <nav id="article-nav">
     
-        <a href="/2017/07/11/JVM/Java对象存活分析/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    Java对象存活分析
-                
-            </div>
-        </a>
     
-    
-        <a href="/2017/06/28/JVM/Java堆空间的分区/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2017/07/16/java集合/HashMap工作原理及实现/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">Java堆空间的分区</div>
+            <div class="article-nav-title">HashMap工作原理以及实现</div>
         </a>
     
 </nav>
@@ -612,9 +576,9 @@
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'https://kiddot.github.io/2017/06/30/JVM/对象的创建、布局与访问/';
+            this.page.url = 'https://kiddot.github.io/2017/07/16/java集合/ArrayList和LinkedList/';
         
-        this.page.identifier = 'JVM/对象的创建、布局与访问';
+        this.page.identifier = 'java集合/ArrayList和LinkedList';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
