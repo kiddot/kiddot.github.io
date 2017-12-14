@@ -3,22 +3,15 @@
 <head>
     <meta charset="utf-8">
     
-    <title>Java对象存活分析 | Share</title>
+    <title>归档 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
-<meta name="keywords" content="jvm">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java对象存活分析">
-<meta property="og:url" content="https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Share">
+<meta property="og:url" content="https://kiddot.github.io/archives/page/3/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs">
-<meta property="og:updated_time" content="2017-12-13T13:53:34.178Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java对象存活分析">
-<meta name="twitter:description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
-<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs">
+<meta name="twitter:title" content="Share">
     
 
     
@@ -215,194 +208,54 @@
 </aside>
 
             
-            <section id="main"><article id="post-JVM/Java对象存活分析" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
+            <section id="main"><div class="timeline timeline-wrap">
+    
+            <div class="timeline-row timeline-row-major">
+                <span class="node"><i class="fa fa-calendar"></i></span>
+                <h1 class="title">2017</h1>
+            </div>
         
-            
-	
-		<img src="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs" class="article-banner" />
-	
-
-
-
-        
-        
-            <header class="article-header">
+        <div class="timeline-row">
+            <span class="node"></span>
+            <div class="content">
                 
     
-        <h1 class="article-title" itemprop="name">
-            Java对象存活分析
+        <h1 itemprop="name">
+            <a class="timeline-article-title" href="/2017/06/28/JVM/JVM内存模型以及分区/">JVM内存模型以及分区</a>
         </h1>
     
 
-                
-                    <div class="article-meta">
-                        
+                <div class="article-meta">
+                    
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/07/11/JVM/Java对象存活分析/">
-            <time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time>
+        <a href="/2017/06/28/JVM/JVM内存模型以及分区/">
+            <time datetime="2017-06-28T10:51:22.000Z" itemprop="datePublished">2017-06-28</time>
         </a>
     </div>
 
 
-                        
+                    
     <div class="article-category">
     	<i class="fa fa-folder"></i>
         <a class="article-category-link" href="/categories/jvm/">jvm</a>
     </div>
 
-                        
+                    
     <div class="article-tag">
         <i class="fa fa-tag"></i>
         <a class="tag-link" href="/tags/jvm/">jvm</a>
     </div>
 
-                    </div>
-                
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-            
-            <h1 id="Java对象存活分析"><a href="#Java对象存活分析" class="headerlink" title="Java对象存活分析"></a>Java对象存活分析</h1><blockquote>
-<p>​    判断对象是否存活有两种比较常见的方法：<strong>引用计数法</strong>与<strong>可达性分析算法</strong>。</p>
-</blockquote>
-<a id="more"></a>
-<h2 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h2><blockquote>
-<p>​    引用计数法的逻辑非常简单，但是存在问题，java并不采用这种方式进行对象存活判断。</p>
-</blockquote>
-<p>​    引用计数法的逻辑是：在堆中存储对象时，在对象头处维护一个counter计数器，如果一个对象增加了一个引用与之相连，则将counter++。如果一个引用关系失效则counter–。如果一个对象的counter变为0，则说明该对象已经被废弃，不处于存活状态。</p>
-<p>这种方法来标记对象的状态会存在很多问题：</p>
-<blockquote>
-<p>jdk从1.2开始增加了多种引用方式：软引用、弱引用、虚引用，且在不同引用情况下程序应进行不同的操作。如果我们只采用一个引用计数法来计数无法准确的区分这么多种引用的情况。</p>
-</blockquote>
-<p>除了引用计数法无法解决多种类型引用的问题，循环持有问题才是致命的问题。比如:</p>
-<blockquote>
-<p>如果一个对象A持有对象B，而对象B也持有一个对象A，那发生了类似操作系统中死锁的循环持有，这种情况下A与B的counter恒大于1，会使得GC永远无法回收这两个对象。</p>
-</blockquote>
-<h2 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h2><p>​    这个算法的<strong>基本思路</strong>就是通过一系列名为<strong>GC Roots</strong>的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的。</p>
-<p>如下情况的对象可以作为GC Roots：</p>
-<ul>
-<li>虚拟机栈(栈桢中的本地变量表)中的引用的对象</li>
-<li>方法区中的类静态属性引用的对象</li>
-<li>方法区中的常量引用的对象</li>
-<li>本地方法栈中JNI（Native方法）的引用的对象</li>
-</ul>
-<h1 id="HotSpot虚拟机如何实现可达性算法？"><a href="#HotSpot虚拟机如何实现可达性算法？" class="headerlink" title="HotSpot虚拟机如何实现可达性算法？"></a>HotSpot虚拟机如何实现可达性算法？</h1><h2 id="使用OopMap记录并枚举根节点"><a href="#使用OopMap记录并枚举根节点" class="headerlink" title="使用OopMap记录并枚举根节点"></a>使用OopMap记录并枚举根节点</h2><ul>
-<li>HotSpot首先需要枚举所有的GC Roots根节点，虚拟机栈的空间不大，遍历一次的时间或许可以接受，但是方法区的空间很可能就有数百兆，遍历一次需要很久。更加关键的是，当我们遍历所有GC Roots根节点时，我们需要暂停所有用户线程，因为我们需要一个此时此刻的”虚拟机快照”，如果我们不暂停用户线程，那么虚拟机仍处于运行状态，我们无法确保能够正确遍历所有的根节点。所以此时的时间开销过大更是我们不能接受的。</li>
-<li>基于这种情况，HotSpot实现了一种叫做OopMap的数据结构，这种数据结构在类加载完成时把对象内的偏移量是什么类型计算出，并且存放下位置，当需要遍历根结点时访问所有OopMap即可。</li>
-</ul>
-<h2 id="用安全点Safepoint约束根节点"><a href="#用安全点Safepoint约束根节点" class="headerlink" title="用安全点Safepoint约束根节点"></a>用安全点Safepoint约束根节点</h2><ul>
-<li>如果将每个符合GC Roots条件的对象都存放进入OopMap中，那么OopMap也会变得很大，而且其中很多对象很可能会发生一些变化，这些变化使得维护这个映射表很困难。实际上，HotSpot并没有为每一个对象都创建OopMap，只在特定的位置上创建了这些信息，这些位置称为安全点（Safepoints）。</li>
-<li>为了保证虚拟机中安全点的个数不算太多也不是太少，主要决定安全点是否被建立的因素是时间。当进行了耗时的操作时，比如方法调用、循环跳转等时会产生安全点。</li>
-</ul>
-
-        
-        </div>
-        <footer class="article-footer">
-            <div class="share-container">
-
-
-
-    <div class="a2a_kit a2a_default_style">
-    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
-    <span class="a2a_divider"></span>
-    <a class="a2a_button_facebook"></a>
-    <a class="a2a_button_twitter"></a>
-    <a class="a2a_button_google_plus"></a>
-    <a class="a2a_button_pinterest"></a>
-    <a class="a2a_button_tumblr"></a>
-</div>
-<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
-<style>
-    .a2a_menu {
-        border-radius: 4px;
-    }
-    .a2a_menu a {
-        margin: 2px 0;
-        font-size: 14px;
-        line-height: 16px;
-        border-radius: 4px;
-        color: inherit !important;
-        font-family: 'Microsoft Yahei';
-    }
-    #a2apage_dropdown {
-        margin: 10px 0;
-    }
-    .a2a_mini_services {
-        padding: 10px;
-    }
-    a.a2a_i,
-    i.a2a_i {
-        width: 122px;
-        line-height: 16px;
-    }
-    a.a2a_i .a2a_svg,
-    a.a2a_more .a2a_svg {
-        width: 16px;
-        height: 16px;
-        line-height: 16px;
-        vertical-align: top;
-        background-size: 16px;
-    }
-    a.a2a_i {
-        border: none !important;
-    }
-    a.a2a_menu_show_more_less {
-        margin: 0;
-        padding: 10px 0;
-        line-height: 16px;
-    }
-    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
-    .a2a_mini_services{*+height:1%;}
-</style>
-
-</div>
-
-            
-    
-        <a href="https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/">评论</a>
-    
-
-        </footer>
-    </div>
-    
-        
-<nav id="article-nav">
-    
-        <a href="/2017/07/12/JVM/GC的三种收集方法/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    GC的三种收集方法
-                
+                </div>
             </div>
-        </a>
+        </div>
     
-    
-        <a href="/2017/06/30/JVM/对象的创建、布局与访问/" id="article-nav-older" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">对象的创建、布局与访问</div>
-        </a>
-    
-</nav>
+</div>
 
-
-    
-</article>
-
-
-    
-    
-        <section id="comments">
-    <div id="disqus_thread">
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    </div>
-</section>
-    
-
+    <nav id="page-nav">
+        <a class="extend prev" rel="prev" href="/archives/page/2/">&laquo; 上一页</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span>
+    </nav>
 </section>
             
                 
@@ -588,13 +441,11 @@
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/';
-        
-        this.page.identifier = 'JVM/Java对象存活分析';
+        this.page.identifier = '';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
-        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
+        s.src = '//' + 'kiddy0916' + '.disqus.com/count.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();

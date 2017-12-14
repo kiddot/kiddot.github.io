@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8">
     
-    <title>Java对象存活分析 | Share</title>
+    <title>SparseArray | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
-<meta name="keywords" content="jvm">
+    <meta name="description" content="SparseArray">
+<meta name="keywords" content="java集合">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java对象存活分析">
-<meta property="og:url" content="https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/index.html">
+<meta property="og:title" content="SparseArray">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/16/java集合/SparseArray/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
+<meta property="og:description" content="SparseArray">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs">
-<meta property="og:updated_time" content="2017-12-13T13:53:34.178Z">
+<meta property="og:image" content="http://oeu3kvs3k.bkt.clouddn.com/5.jpg">
+<meta property="og:updated_time" content="2017-12-14T14:55:52.592Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java对象存活分析">
-<meta name="twitter:description" content="Java对象存活分析 ​    判断对象是否存活有两种比较常见的方法：引用计数法与可达性分析算法。">
-<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs">
+<meta name="twitter:title" content="SparseArray">
+<meta name="twitter:description" content="SparseArray">
+<meta name="twitter:image" content="http://oeu3kvs3k.bkt.clouddn.com/5.jpg">
     
 
     
@@ -215,12 +215,12 @@
 </aside>
 
             
-            <section id="main"><article id="post-JVM/Java对象存活分析" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-java集合/SparseArray" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             
 	
-		<img src="http://oeu3kvs3k.bkt.clouddn.com/FnF_BYGkntZz4OTczXXLJSLj8BZs" class="article-banner" />
+		<img src="http://oeu3kvs3k.bkt.clouddn.com/5.jpg" class="article-banner" />
 	
 
 
@@ -231,7 +231,7 @@
                 
     
         <h1 class="article-title" itemprop="name">
-            Java对象存活分析
+            SparseArray
         </h1>
     
 
@@ -240,8 +240,8 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/07/11/JVM/Java对象存活分析/">
-            <time datetime="2017-07-11T03:51:22.000Z" itemprop="datePublished">2017-07-11</time>
+        <a href="/2017/07/16/java集合/SparseArray/">
+            <time datetime="2017-07-16T15:21:12.000Z" itemprop="datePublished">2017-07-16</time>
         </a>
     </div>
 
@@ -249,13 +249,13 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/jvm/">jvm</a>
+        <a class="article-category-link" href="/categories/java集合/">java集合</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/jvm/">jvm</a>
+        <a class="tag-link" href="/tags/java集合/">java集合</a>
     </div>
 
                     </div>
@@ -266,38 +266,88 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="Java对象存活分析"><a href="#Java对象存活分析" class="headerlink" title="Java对象存活分析"></a>Java对象存活分析</h1><blockquote>
-<p>​    判断对象是否存活有两种比较常见的方法：<strong>引用计数法</strong>与<strong>可达性分析算法</strong>。</p>
+            <h1 id="SparseArray"><a href="#SparseArray" class="headerlink" title="SparseArray"></a>SparseArray</h1><a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><blockquote>
+<p>SparseArray（稀疏数组） 以int为键，Object为值进行一一映射</p>
 </blockquote>
-<a id="more"></a>
-<h2 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h2><blockquote>
-<p>​    引用计数法的逻辑非常简单，但是存在问题，java并不采用这种方式进行对象存活判断。</p>
-</blockquote>
-<p>​    引用计数法的逻辑是：在堆中存储对象时，在对象头处维护一个counter计数器，如果一个对象增加了一个引用与之相连，则将counter++。如果一个引用关系失效则counter–。如果一个对象的counter变为0，则说明该对象已经被废弃，不处于存活状态。</p>
-<p>这种方法来标记对象的状态会存在很多问题：</p>
-<blockquote>
-<p>jdk从1.2开始增加了多种引用方式：软引用、弱引用、虚引用，且在不同引用情况下程序应进行不同的操作。如果我们只采用一个引用计数法来计数无法准确的区分这么多种引用的情况。</p>
-</blockquote>
-<p>除了引用计数法无法解决多种类型引用的问题，循环持有问题才是致命的问题。比如:</p>
-<blockquote>
-<p>如果一个对象A持有对象B，而对象B也持有一个对象A，那发生了类似操作系统中死锁的循环持有，这种情况下A与B的counter恒大于1，会使得GC永远无法回收这两个对象。</p>
-</blockquote>
-<h2 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h2><p>​    这个算法的<strong>基本思路</strong>就是通过一系列名为<strong>GC Roots</strong>的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的。</p>
-<p>如下情况的对象可以作为GC Roots：</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>特点：</p>
 <ul>
-<li>虚拟机栈(栈桢中的本地变量表)中的引用的对象</li>
-<li>方法区中的类静态属性引用的对象</li>
-<li>方法区中的常量引用的对象</li>
-<li>本地方法栈中JNI（Native方法）的引用的对象</li>
+<li><strong>存放key的数组是有序的（二分查找的前提条件）</strong></li>
+<li><strong>如果冲突，新值直接覆盖原值，并且不会返回原值（HashMap会返回原值）</strong></li>
+<li><strong>如果当前要插入的 key 的索引上的值为DELETE，直接覆盖</strong></li>
+<li><strong>前几步都失败了，检查是否需要gc()并且在该索引上插入数据</strong></li>
+<li><strong>二分查找算法是核心算法之一</strong></li>
 </ul>
-<h1 id="HotSpot虚拟机如何实现可达性算法？"><a href="#HotSpot虚拟机如何实现可达性算法？" class="headerlink" title="HotSpot虚拟机如何实现可达性算法？"></a>HotSpot虚拟机如何实现可达性算法？</h1><h2 id="使用OopMap记录并枚举根节点"><a href="#使用OopMap记录并枚举根节点" class="headerlink" title="使用OopMap记录并枚举根节点"></a>使用OopMap记录并枚举根节点</h2><ul>
-<li>HotSpot首先需要枚举所有的GC Roots根节点，虚拟机栈的空间不大，遍历一次的时间或许可以接受，但是方法区的空间很可能就有数百兆，遍历一次需要很久。更加关键的是，当我们遍历所有GC Roots根节点时，我们需要暂停所有用户线程，因为我们需要一个此时此刻的”虚拟机快照”，如果我们不暂停用户线程，那么虚拟机仍处于运行状态，我们无法确保能够正确遍历所有的根节点。所以此时的时间开销过大更是我们不能接受的。</li>
-<li>基于这种情况，HotSpot实现了一种叫做OopMap的数据结构，这种数据结构在类加载完成时把对象内的偏移量是什么类型计算出，并且存放下位置，当需要遍历根结点时访问所有OopMap即可。</li>
+<p>会造成缺点：</p>
+<ul>
+<li>在存在大量元素以及涉及大量增删的时候，由于会引起数组的频繁变化</li>
+<li>当容器内在大量元素的时候，使用二分查找会带来很差的性能</li>
 </ul>
-<h2 id="用安全点Safepoint约束根节点"><a href="#用安全点Safepoint约束根节点" class="headerlink" title="用安全点Safepoint约束根节点"></a>用安全点Safepoint约束根节点</h2><ul>
-<li>如果将每个符合GC Roots条件的对象都存放进入OopMap中，那么OopMap也会变得很大，而且其中很多对象很可能会发生一些变化，这些变化使得维护这个映射表很困难。实际上，HotSpot并没有为每一个对象都创建OopMap，只在特定的位置上创建了这些信息，这些位置称为安全点（Safepoints）。</li>
-<li>为了保证虚拟机中安全点的个数不算太多也不是太少，主要决定安全点是否被建立的因素是时间。当进行了耗时的操作时，比如方法调用、循环跳转等时会产生安全点。</li>
+<p>针对删除时的缺点进行的优化：</p>
+<ul>
+<li>删除时，不直接压缩数组；而是对改为进行标记为DELETED（<strong>因此，删除并不会造成数组大小的变化，即mSize没有变化</strong>）</li>
 </ul>
+<h3 id="二分查找算法"><a href="#二分查找算法" class="headerlink" title="二分查找算法"></a>二分查找算法</h3><p>特点：</p>
+<ul>
+<li>当查找的key存在时候，返回的是key在数组位置的index</li>
+<li>当查找的key不存在的时候，返回的index是该key应该存在的位置 </li>
+</ul>
+<p>### </p>
+<h3 id="插入数据的四种情况"><a href="#插入数据的四种情况" class="headerlink" title="插入数据的四种情况"></a>插入数据的四种情况</h3><h4 id="一、冲突覆盖"><a href="#一、冲突覆盖" class="headerlink" title="一、冲突覆盖"></a>一、冲突覆盖</h4><p><img src="https://user-gold-cdn.xitu.io/2016/11/29/7736084654699bdeb266c3d858996c9b.jpg?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="冲突直接覆盖原值"></p>
+<ul>
+<li>上面这个图，插入一个<code>key=3</code>的元素，因为在<code>mKeys</code>中已经存在了这个值，则直接覆盖。</li>
+</ul>
+<h4 id="二、插入索引上为DELETED"><a href="#二、插入索引上为DELETED" class="headerlink" title="二、插入索引上为DELETED"></a>二、插入索引上为DELETED</h4><p><img src="https://user-gold-cdn.xitu.io/2016/11/29/4d8464b8629482e3a5e1ae7478325268.jpg?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="索引上为DELETED"></p>
+<ul>
+<li>注意<code>mKeys</code>中并没有 3 这个值，但是通过二分查找得出来，目前应该插入的索引位置为 2 ，即<code>key=4</code>所在的位置，而当前这个位置上对应的<code>value</code>标记为<code>DELETED</code>了，所以会直接将该位置上的<code>key</code>赋值为 3 ，并且将该位置上的<code>value</code>赋值为<code>put()</code>传入的对象。</li>
+</ul>
+<h4 id="三、索引上有值，但是应该触发gc"><a href="#三、索引上有值，但是应该触发gc" class="headerlink" title="三、索引上有值，但是应该触发gc()"></a>三、索引上有值，但是应该触发<code>gc()</code></h4><p><img src="https://user-gold-cdn.xitu.io/2016/11/29/51b6989508b36a1f93e5fc2ec3ba44d9.jpg?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="触发gc()"></p>
+<ul>
+<li>数组已经满容量了，而且 3 应该插入的位置已经有 4 了，而 5 所指向的值为<code>DELETED</code>，<strong>这种情况下，会先去回收DELETED,重新调整数组结构，图中的例子则会回收 5 ,然后再重新计算 3 应该插入的位置</strong></li>
+</ul>
+<h4 id="四、满容且无法gc"><a href="#四、满容且无法gc" class="headerlink" title="四、满容且无法gc()"></a>四、满容且无法<code>gc()</code></h4><p><img src="https://user-gold-cdn.xitu.io/2016/11/29/c9abbaecc88d89e5c92a9caef804b63f.jpg?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="满容且无法触发gc()"></p>
+<ul>
+<li>这种情况下，就只能对数组进行扩容，然后插入数据。</li>
+<li>扩容策略为：创建一个新数组（容量为原来数组的两倍，即×2），然后将原来数组内容复制到新的数组中<ul>
+<li>可见，数组扩容，会进行数组复制影响效率，尽量避免数组进行扩容</li>
+</ul>
+</li>
+</ul>
+<h2 id="数组紧凑"><a href="#数组紧凑" class="headerlink" title="数组紧凑"></a>数组紧凑</h2><blockquote>
+<p>上面说到，删除只是将values值进行标记，并不会去删除，那么它什么时候会被真正删除？里面有个gc（）方法，就是起到数组紧凑的作用的，即将将原本标记的DELETED对应的key-value都删掉，那什么时候会调用这个gc方法？</p>
+</blockquote>
+<ul>
+<li>添加元素的时候可能会触发<code>gc()</code>，这个可能的情况就是，容量不足，需要扩容的时候</li>
+<li>执行一系列跟<code>index</code>有关的方法，都会试图去触发<code>gc()</code>，这样可以返回给调用者一个精确的索引值。</li>
+</ul>
+<h2 id="与HashMap比较"><a href="#与HashMap比较" class="headerlink" title="与HashMap比较"></a>与HashMap比较</h2><p><strong>优点：</strong></p>
+<ul>
+<li>避免了基本数据类型的装箱操作</li>
+<li>不需要存储额外的结构体，单个元素的存储成本更低</li>
+<li>数据量少情况下，随机访问效率更高</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>插入操作需要复制数组，增删效率低（二分查找算法时间复杂度为O(logn)，hash查找时间复杂度是O(1)）</li>
+<li>数据量大时，复制数组成本也更大，gc成本也更大</li>
+<li>数据量大时，查询效率也会降低</li>
+</ul>
+<p><strong>总结：</strong></p>
+<ul>
+<li>从查找、插入、删除速度看，hashmap更佳（虽然数据量小的情况下，两者性能差不多）（主要是一个基于hash查找，一个基于二分查找，两个算法的时间复杂度决定的）</li>
+<li>内存开销<ul>
+<li><code>HashMap</code>由于自动装箱以及<code>HashEntry</code>额外占用内存，所以<code>HashMap</code>内存占用较大</li>
+<li><code>SparseArray</code>基于数组，不需要自动装箱，内存占用较小</li>
+</ul>
+</li>
+</ul>
+<h1 id="话外题：HashMap的装箱空间效率"><a href="#话外题：HashMap的装箱空间效率" class="headerlink" title="话外题：HashMap的装箱空间效率"></a>话外题：HashMap的装箱空间效率</h1><h4 id="1-Long的装箱"><a href="#1-Long的装箱" class="headerlink" title="1. Long的装箱"></a>1. Long的装箱</h4><p>在对象头中，加入额外的指针8Bype，加入8Bype的MarkWord(hashcode与锁信息)，这里就是16Byte</p>
+<p>也就是说，long在装箱后，效率为 8/24 = 1/3</p>
+<h4 id="2-Map-Entry的装箱"><a href="#2-Map-Entry的装箱" class="headerlink" title="2. Map.Entry的装箱"></a>2. Map.Entry的装箱</h4><p>字段空间: hash(4) + padding(4) ＋ next(8) = 16Byte，这里的padding是字节对齐</p>
+<p>对象头: 16Byte，指针+MarkWord</p>
+<p>也就是说，维护一个Entry需要32Byte的空间</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class"></span>&#123;    </span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> hash;    </span><br><span class="line">    <span class="keyword">final</span> K key;    </span><br><span class="line">    V value;    </span><br><span class="line">    Node&lt;K,V&gt; next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    </p>
 
         
         </div>
@@ -363,7 +413,7 @@
 
             
     
-        <a href="https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/">评论</a>
+        <a href="https://kiddot.github.io/2017/07/16/java集合/SparseArray/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/16/java集合/SparseArray/">评论</a>
     
 
         </footer>
@@ -372,19 +422,10 @@
         
 <nav id="article-nav">
     
-        <a href="/2017/07/12/JVM/GC的三种收集方法/" id="article-nav-newer" class="article-nav-link-wrap">
-            <strong class="article-nav-caption">上一篇</strong>
-            <div class="article-nav-title">
-                
-                    GC的三种收集方法
-                
-            </div>
-        </a>
     
-    
-        <a href="/2017/06/30/JVM/对象的创建、布局与访问/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2017/07/16/java集合/ArrayList和LinkedList/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title">对象的创建、布局与访问</div>
+            <div class="article-nav-title">ArrayList和LinkedList</div>
         </a>
     
 </nav>
@@ -588,9 +629,9 @@
     <script>
     var disqus_config = function () {
         
-            this.page.url = 'https://kiddot.github.io/2017/07/11/JVM/Java对象存活分析/';
+            this.page.url = 'https://kiddot.github.io/2017/07/16/java集合/SparseArray/';
         
-        this.page.identifier = 'JVM/Java对象存活分析';
+        this.page.identifier = 'java集合/SparseArray';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
