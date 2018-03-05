@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>计网总结 | Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="计网总结物理层数据链路层三个基本问题 封装成帧 透明传输 差错检测  PPP帧与Mac帧的区别 ppp属于广域网范畴，MAC是局域网范畴，按实际情况和环境就选用不同的协议，ppp支持的网络结构只能是点对点，mac支持多点对多点。 以太网中用mac，远程的话就用ppp（如ADSL拨号，就是基于ppp的）。 ppp是点到点协议  ,逻辑上相连的就一台设备，因此不需要寻址, 目标地址为广播地址, PPP">
+<meta name="keywords" content="计网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计网总结">
+<meta property="og:url" content="https://kiddot.github.io/2017/07/23/计网/计网总结/index.html">
+<meta property="og:site_name" content="Share">
+<meta property="og:description" content="计网总结物理层数据链路层三个基本问题 封装成帧 透明传输 差错检测  PPP帧与Mac帧的区别 ppp属于广域网范畴，MAC是局域网范畴，按实际情况和环境就选用不同的协议，ppp支持的网络结构只能是点对点，mac支持多点对多点。 以太网中用mac，远程的话就用ppp（如ADSL拨号，就是基于ppp的）。 ppp是点到点协议  ,逻辑上相连的就一台设备，因此不需要寻址, 目标地址为广播地址, PPP">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://whvn.cc/442708">
+<meta property="og:updated_time" content="2018-03-05T16:09:00.204Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计网总结">
+<meta name="twitter:description" content="计网总结物理层数据链路层三个基本问题 封装成帧 透明传输 差错检测  PPP帧与Mac帧的区别 ppp属于广域网范畴，MAC是局域网范畴，按实际情况和环境就选用不同的协议，ppp支持的网络结构只能是点对点，mac支持多点对多点。 以太网中用mac，远程的话就用ppp（如ADSL拨号，就是基于ppp的）。 ppp是点到点协议  ,逻辑上相连的就一台设备，因此不需要寻址, 目标地址为广播地址, PPP">
+<meta name="twitter:image" content="https://whvn.cc/442708">
+    
+
+    
+        <link rel="alternate" href="/" title="Share" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Share</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">kiddot</h2>
+            <h3 id="title">Android Developer &amp; Coder</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/kiddot">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                25
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                5
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/kiddot" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/kiddo1024" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/dekai.liang.94" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://dribbble.com/dribbble" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-计网/计网总结" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://whvn.cc/442708" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            计网总结
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/07/23/计网/计网总结/">
+            <time datetime="2017-07-23T04:26:11.000Z" itemprop="datePublished">2017-07-23</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/计网/">计网</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/计网/">计网</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="计网总结"><a href="#计网总结" class="headerlink" title="计网总结"></a>计网总结</h1><h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><h3 id="三个基本问题"><a href="#三个基本问题" class="headerlink" title="三个基本问题"></a>三个基本问题</h3><ul>
+<li>封装成帧</li>
+<li>透明传输</li>
+<li>差错检测</li>
+</ul>
+<h3 id="PPP帧与Mac帧的区别"><a href="#PPP帧与Mac帧的区别" class="headerlink" title="PPP帧与Mac帧的区别"></a>PPP帧与Mac帧的区别</h3><blockquote>
+<p>ppp属于广域网范畴，MAC是局域网范畴，按实际情况和环境就选用不同的协议，ppp支持的网络结构只能是点对点，mac支持多点对多点。</p>
+<p>以太网中用mac，远程的话就用ppp（如ADSL拨号，就是基于ppp的）。</p>
+<p>ppp是点到点协议  ,逻辑上相连的就一台设备，因此不需要寻址, 目标地址为广播地址, PPP中前6个字节就是目标地址。</p>
+</blockquote>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><blockquote>
+<p>提供主机间的逻辑通信</p>
+</blockquote>
+<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>ARP是解决<strong>同一个局域网</strong>中主机或路由器IP地址到硬件地址的映射问题。</p>
+<blockquote>
+<p>每台主机都有一个ARP高速缓存，里面存放着一个从IP地址到硬件地址的映射表，并且动态更新</p>
+</blockquote>
+<p>步骤：</p>
+<ul>
+<li>ARP进程在局域网上广播发送一个ARP请求分组。（附带上自己的IP地址和硬件地址以及目的地址）</li>
+<li>在局域网上所有主机上运行ARP进程都会收到这个ARP分组</li>
+<li>主机B的IP地址和ARP请求分组中要查询的一致，就收下这个请求分组，并且向主机A发送ARP响应分组</li>
+<li>主机A收到主机B的ARP响应分组后，在自己的ARP高速缓存中写入主机B的IP地址到硬件地址的映射</li>
+</ul>
+<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ICMP报文是装在IP数据报中的，作为其中的数据部分。</p>
+<p>应用：</p>
+<ul>
+<li>ping</li>
+<li>tracerouter</li>
+</ul>
+<h3 id="路由选择协议"><a href="#路由选择协议" class="headerlink" title="路由选择协议"></a>路由选择协议</h3><h4 id="内部网关协议IGP"><a href="#内部网关协议IGP" class="headerlink" title="内部网关协议IGP"></a>内部网关协议IGP</h4><p><strong>RIP</strong>：基于距离向量</p>
+<p>优点：</p>
+<ul>
+<li>配置简单</li>
+<li>开销小</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li><strong>大量广播</strong>。RIP向所有邻居每隔30秒广播一次完整的路由表,将占用宝贵的带宽资源,在较慢的广域网链路上尤其有问题｡</li>
+<li><strong>没有成本概念</strong>｡RIP没有网络延迟和链路成本的概念｡当采用RIP时,路由/转发的决定只是基于跳线,这样,很容易导致无法选择最佳路由｡例如,一条链路拥有较高的带宽,但是,跳数较多,从而不能被选择｡</li>
+<li><strong>支持的网络规模有限</strong>｡由于RIP路由协议最多只支持16个步跳,当超过该跳数时,网络将认为无法到达｡因此,RIP只能适用于规模较少的网络｡</li>
+</ul>
+<p><strong>OSPF</strong>:最短路径优先</p>
+<p>优点：</p>
+<ul>
+<li><strong>快速收敛</strong>｡OSPF是真正的LOOP- FREE(无路由自环)路由协议｡源自其算法本身——链路状态及最短路径树算法,OSPF收敛速度快,能够在最短的时间内将路由变化传递到整个自治系统｡</li>
+<li><strong>区域划分</strong>｡提出区域(Area)划分的概念,将自治系统划分为不同区域后,通过区域之间的对路由信息的摘要,大大减少了需传递的路由信息数量,也使得路由信息不会随网络规模的扩大而急剧膨胀｡</li>
+<li><strong>开销控制</strong>｡将协议自身的开销控制到最小｡用于发现和维护邻居关系的是定期发送的不含路由信息的hello报文,非常短小｡包含路由信息的报文是触发更新的机制,而且只有在路由变化时才会发送｡但为了增强协议的健壮性,每1800秒全部重发一次｡</li>
+<li><strong>安全性高</strong>｡良好的安全性,OSPF支持基于接口的明文及MD5 验证｡</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><strong>配置相对复杂</strong>｡由于网络区域划分和网络属性的复杂性,需要网络分析员有较高的网络知识水平才能配置和管理OSPF网络｡</li>
+<li><strong>路由负载均衡能力较弱</strong>｡OSPF虽然能根据接口的速率､连接可靠性等信息,自动生成接口路由优先级,但在通往同一目的的不同优先级路由中,OSPF只选择优先级较高的转发,不同优先级的路由中,不能实现负载分担｡只有相同优先级的,才能达到负载均衡的目的</li>
+</ul>
+<h4 id="外部网关协议EGP"><a href="#外部网关协议EGP" class="headerlink" title="外部网关协议EGP"></a>外部网关协议EGP</h4><p><strong>BGP</strong></p>
+<blockquote>
+<p>高度抽象，把AS自治系统抽象成一个路由，它就是一个基于路径向量路由选择协议。每个AS系统会有一个或者多个路由器充当发言人，根据收到的路由信息拓扑出AS的树型结构连通图</p>
+</blockquote>
+<h3 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h3><h2 id="运输层"><a href="#运输层" class="headerlink" title="运输层"></a>运输层</h2><blockquote>
+<p>提供应用进程间端到端的逻辑通信</p>
+</blockquote>
+<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><ul>
+<li>无连接，不可靠，面向报文</li>
+<li>无拥塞控制，支持一对一，一对多，多对多，多对一，首部开销小</li>
+<li>检验和把首部和数据部分一起都检验</li>
+</ul>
+<h4 id="UDP丢包"><a href="#UDP丢包" class="headerlink" title="UDP丢包"></a>UDP丢包</h4><p><strong>丢包的主要原因</strong></p>
+<ol>
+<li>接收端处理时间过长导致丢包：调用recv方法接收端收到数据后，处理数据花了一些时间，处理完后再次调用recv方法，在这二次调用间隔里，发过来的包可能丢失。<strong>对于这种情况可以修改接收端，将包接收后存入一个缓冲区，然后迅速返回继续recv.</strong></li>
+<li>发送的包较大，超过接受者缓存导致丢包：包超过mtu size数倍，几个大的udp包可能会超过接收者的缓冲，导致丢包</li>
+<li>发送的包频率太快：虽然每个包的大小都小于mtu size 但是频率太快</li>
+</ol>
+<p><strong>解决方案</strong></p>
+<ul>
+<li>可以修改接收端，将包接收后存入一个缓冲区</li>
+<li>对于超过缓存大小的包，可以选择直接接受</li>
+<li>通过流量控制</li>
+</ul>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><ul>
+<li>面向连接，可靠</li>
+<li>面向字节流</li>
+<li>全双工通信</li>
+</ul>
+<h4 id="TCP粘包拆包"><a href="#TCP粘包拆包" class="headerlink" title="TCP粘包拆包"></a>TCP粘包拆包</h4><ul>
+<li><strong>粘包拆包出现的原因</strong> ：  因为TCP面向字节流传输的，发送端需要等缓冲区满才发送出去，造成粘包。接收方不及时接收缓冲区的包，造成多个包接收    </li>
+<li><strong>非工程性的解决方法</strong>：<ul>
+<li>利用TCP提供了强制数据立即传送的操作指令push<br><strong>缺点</strong>：但它关闭了优化算法，降低了网络发送效率，影响应用程序的性能</li>
+<li>精简接收进程工作量、提高接收进程优先级等措施，使其及时接收数据<br><strong>缺点</strong>：只能减少出现粘包的可能性，但并不能完全避免粘包。因为当发送频率较高时，或由于网络突发可能使某个时间段数据包到达接收方较快，接收方还是有可能来不及接收，从而导致粘包。</li>
+<li>两次send函数之间添加 sleep函数<br><strong>缺点</strong>：会降低数据传输效率</li>
+</ul>
+</li>
+<li><strong>工程型的解决方法</strong>：<ul>
+<li>1.消息定长，例如每个报文的大小为固定长度200字节,如果不够，空位补空格；</li>
+<li>2.在包尾增加回车换行符进行分割（模仿帧的设计方式）；</li>
+<li>3.将消息分为消息头和消息体，消息头中包含表示消息总长度（或者消息体长度）的字段，通常设计思路是消息头的第一个字段用int来表示消息的总长度；（在pushsdk中使用此种方式利用了Netty中的LengthFieldBasedFrameDecoder解码器实现)</li>
+<li>4.更复杂的应用层协议；</li>
+<li>添加标志字段，在每次发送数据是添加标记字段：A： =&gt;size 标记数据长度的方式  B：特定标记字段标记数据的结尾（模仿帧的设计方式）＝&gt;结束符的方式</li>
+<li>定义应用层的数据通讯协议 ：=&gt;如果数据按照一定的方式存储或着优加密的需求， 可以通过自己定制 数据通讯协议对数据封装，并实现自己的数据 封包｜ 拆包函数。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>为了解决TCP粘包拆包的问题，Netty默认提供了多种编码器来处理</p>
+</blockquote>
+<h4 id="根据MTU拆分成多个数据报"><a href="#根据MTU拆分成多个数据报" class="headerlink" title="根据MTU拆分成多个数据报"></a>根据MTU拆分成多个数据报</h4><p><a href="http://blog.csdn.net/yusiguyuan/article/details/22782943" target="_blank" rel="noopener">http://blog.csdn.net/yusiguyuan/article/details/22782943</a></p>
+<p>（TCP层的分段和IP层的分片之间的关系 &amp; MTU和MSS之间的关系）</p>
+<h4 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h4><p><img src="http://www.52im.net/data/attachment/forum/201605/02/132229ti2rqg2lpnik3ii1.jpg" alt="理论联系实际：Wireshark抓包分析TCP 3次握手、4次挥手过程_6.jpg"></p>
+<p>在客户端和服务端都创建好传输控制模块TCB的条件下：</p>
+<ul>
+<li>客户端向服务端发出连接请求报文段</li>
+</ul>
+<ul>
+<li>服务端接受到连接请求报文段后，同意建立连接就返回一个确认报文段</li>
+<li>客户端的TCP客户进程收到确认后，还需要向服务端发出确认报文段</li>
+</ul>
+<blockquote>
+<p>ps:<strong>传输控制模块TCB</strong>:存储了每一个连接中的一些重要信息，比如TCP连接表，重传队列指针，当前发送的序列号等等。</p>
+</blockquote>
+<p>为什么是三次握手？</p>
+<blockquote>
+<p><strong>为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误</strong></p>
+</blockquote>
+<p>会有这样的一种情况：client发出的第一个连接请求报文段并没有丢失，而是在某个网络结点长时间的滞留了，以致延误到连接释放以后的某个时间才到达server。<strong>本来这是一个早已失效的报文段。但server收到此失效的连接请求报文段后，就误认为是client再次发出的一个新的连接请求。于是就向client发出确认报文段，同意建立连接。假设不采用“三次握手”，那么只要server发出确认，新的连接就建立了。由于现在client并没有发出建立连接的请求，因此不会理睬server的确认，也不会向server发送数据。但server却以为新的运输连接已经建立，并一直等待client发来数据。这样，server的很多资源就白白浪费掉了。</strong>采用“三次握手”的办法可以防止上述现象发生。例如刚才那种情况，client不会向server的确认发出确认。server由于收不到确认，就知道client并没有要求建立连接。”。<strong>主要目的防止server端一直等待，浪费资源。</strong></p>
+<h4 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h4><p><img src="http://www.52im.net/data/attachment/forum/201605/02/132717xa86zoapkfmhmppz.jpg" alt="理论联系实际：Wireshark抓包分析TCP 3次握手、4次挥手过程_15.jpg"></p>
+<ul>
+<li>1.客户端发送连接释放报文段，并且停止发送数据，主动关闭TCP连接，然后进入等待状态，等待服务端的确认</li>
+<li>2.服务端收到连接释放报文段之后，立即发送确认报文段，然后进入关闭等待状态。并且TCP服务器进程会通知高层应用进程。这个时候，客户端到服务端这个方向的连接就处于半关闭状态。</li>
+<li>客户端收到确认报文段之后，等待服务端发出连接释放报文段</li>
+<li>3.若服务端没有要向客户端发送的数据之后，应用进程会通知TCP释放连接。这个时候，服务端会发出连接释放报文段</li>
+<li>4.客户端收到连接释放报文段之后，会返回一个确认报文段。然后自己进入时间等待状态，即等待一个时间才会最终进入关闭状态。<ul>
+<li>为什么需要等待一个时间？<ul>
+<li>一、为了保证客户端最后发送的一个报文段能够到达服务端</li>
+<li>二、防止已失效的连接请求报文段出现在本连接中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>服务端只要收到了客户端最后一次的确认报文段就会进入关闭状态，结束这次TCP连接</li>
+</ul>
+<p>为什么需要四次挥手？</p>
+<blockquote>
+<p><strong>确保数据能够完成传输</strong>。 假设服务端收到连接释放报文段之后马上就释放连接，那么服务端还存在数据需要发送给客户端的话，就不能保证这些数据能够发送到客户端身上。因此需要等待服务端把数据发送完之后，由服务端发起一条连接释放报文段，也就是第三次挥手，最后由客户端发起确认，也就是第四次挥手，因此需要四次挥手才能确保数据能够完成完整的传输。</p>
+</blockquote>
+<h4 id="可靠传输的实现"><a href="#可靠传输的实现" class="headerlink" title="可靠传输的实现"></a>可靠传输的实现</h4><p><a href="http://www.cnblogs.com/newwy/p/3238362.html" target="_blank" rel="noopener">TCP可靠传输的实现</a></p>
+<blockquote>
+<p>TCP为了提供可靠传输：</p>
+<p>（1）首先，采用三次握手来建立TCP连接，四次握手来释放TCP连接，从而保证建立的传输信道是可靠的。</p>
+<p>（2）其次，TCP采用了连续ARQ协议（回退N，Go-back-N；超时自动重传）来保证数据传输的正确性，使用滑动窗口协议来保证接方能够及时处理所接收到的数据，进行流量控制。</p>
+<p>（3）最后，TCP使用<strong>慢开始</strong>、<strong>拥塞避免</strong>、<strong>快重传</strong>和<strong>快恢复</strong>来进行拥塞控制，避免网络拥塞。</p>
+</blockquote>
+<ul>
+<li>以字节为单位的滑动窗口</li>
+<li>缓存机制<ul>
+<li>发送缓存用来暂时存放：<br>1.发送应用程序传送给发送方TCP准备的数据<br>2.TCP已发送但尚未收到确认的数据。</li>
+<li>接收缓存用来暂时存放：<br>1.按序到达的，但尚未被接收应用程序读取的数据。<br>2.未按序到达的数据。</li>
+</ul>
+</li>
+<li>超时重传的时间选择</li>
+</ul>
+<h4 id="TCP流量控制原理"><a href="#TCP流量控制原理" class="headerlink" title="TCP流量控制原理"></a>TCP流量控制原理</h4><p>   所谓流量控制就是让发送发送速率不要过快，让接收方来得及接收。利用滑动窗口机制就可以实施流量控制。</p>
+<p>​         原理这就是<strong>运用TCP报文段中的窗口大小字段来控制，发送方的发送窗口不可以大于接收方发回的窗口大小。</strong></p>
+<p>​         考虑一种特殊的情况，就是接收方若没有缓存足够使用，就会发送零窗口大小的报文，此时发送放将发送窗口设置为0，停止发送数据。之后接收方有足够的缓存，发送了非零窗口大小的报文，但是这个报文在中途丢失的，那么发送方的发送窗口就一直为零导致死锁。</p>
+<p>​         解决这个问题，TCP为每一个连接设置一个持续计时器（persistence timer）。只要TCP的一方收到对方的零窗口通知<strong>，就启动该计时器，周期性的发送一个零窗口探测报文段。对方就在确认这个报文的时候给出现在的窗口大小（注意：</strong>TCP规定，即使设置为零窗口，也必须接收以下几种报文段：零窗口探测报文段、确认报文段和携带紧急数据的报文段）。</p>
+<h4 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h4><p>慢开始和拥塞避免</p>
+<p><img src="http://static.oschina.net/uploads/space/2016/0112/214351_J88Z_1403215.png" alt="img"></p>
+<p>ps：<br><strong>拥塞窗口</strong>：cwnd<strong>（Congestion Window)是</strong>发送端**根据自己估计的网络拥塞程度而设置的窗口值，是来自发送端的流量控制。</p>
+<p>如果发现RTT在增大，Vegas就认为网络正在<em>发生拥塞</em></p>
+<p>（1）<strong>慢开始原理</strong></p>
+<p>​     1）当主机开始发送数据时，如果立即将较大的发送窗口的全部数据字节都注入到网络中，那么由于不清楚网络的情况，有可能引其网络拥塞</p>
+<p>​     2）比较好的方法是试探一下，即从小到达逐渐增大发送端的拥塞控制窗口数值</p>
+<p>​     3）通常在刚刚开始发送报文段时可先将拥塞窗口cwnd(拥塞窗口)设置为一个最大报文段的MSS的数值。在每收到一个对新报文段确认后，将拥塞窗口增加至多一个MSS的数值，当rwind（接收窗口）足够大的时候，为了防止拥塞窗口cwind的增长引起网络拥塞，还需要另外一个变量—慢开始门限ssthresh</p>
+<p>（2）<strong>拥塞避免原理</strong></p>
+<p>​    1）让拥塞窗口cwnd缓慢增大，每经过一个往返时间RTT就把发送方的拥塞窗口cwnd加1，而不是加倍。按线性规律缓慢增长。</p>
+<blockquote>
+<p>无论，在慢开始阶段还是在拥塞避免阶段，只要发送方判断网络出现拥塞之后，就会把门限ssthresh设置为发送方发送窗口值的一半</p>
+</blockquote>
+<hr>
+<p><strong>快重传和快恢复</strong></p>
+<p><strong>快重传算法</strong>：在某些情况下更早的重传丢失的报文段（如果当发送端接收到三个重复的确认ACK时，则断定分组丢失，立即重传丢失的报文段，而不必等待重传计时器超时）。</p>
+<p>例如：M1，M2，M3 —–&gt; M1,M3,缺失M2，则接收方向发送方持续发送M2重复确认，当发送方收到M2的三次重复确认，则认为M2报文丢失，启动快重传机制，重传数据，其他数据发送数据放入队列，待快重传结束后再正常传输。</p>
+<p><strong>快恢复算法</strong>有以下两个要点：</p>
+<p>​     1）当发送方连续收到接收方发来的三个重复确认时，就执行“乘法减小”算法，把慢开始门限减半，这是为了预防网络发生拥塞。</p>
+<p>​     2）由于发送方现在认为网络很可能没有发生拥塞，因此现在不执行慢开始算法，而是把<strong>cwnd(拥塞窗口)</strong>值设置为慢开始门限减半后的值，然后开始执行拥塞避免算法<strong>，使拥塞窗口的线性增大</strong>。</p>
+<blockquote>
+<p> ps: <strong>超时重传</strong>是TCP协议保证数据可靠性的另一个重要机制，其原理是在发送某一个数据以后就开启一个计时器，在一定时间内如果没有得到发送的数据报的ACK报文，那么就重新发送数据，直到发送成功为止。</p>
+</blockquote>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><blockquote>
+<p>协议规定应用进程间标准</p>
+</blockquote>
+<h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><blockquote>
+<p>域名解析成IP地址</p>
+</blockquote>
+<p>域名服务器间的查询</p>
+<ul>
+<li>迭代查询</li>
+<li>递归查询</li>
+</ul>
+<p>域名服务器广泛使用高速缓存，减轻根域名服务器以及减少因特网上DNS查询报文数量</p>
+<h3 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h3><p><strong>整体流程</strong>：主机A以广播形式发送报文，DHCP中继（通常是一个路由器）收到报文之后，以单播形式转发此报文给DHCP服务器，然后又通过中继回发提供报文给主机A。DHCP客户就可以使用被分配的IP地址，但是有一定的租用期</p>
+<p>详细的工作步骤：</p>
+<ul>
+<li>DHCP服务器被动打开UDP端口67，等待客户端发送报文</li>
+<li>DHCP客户从UDP端口68发送DHCP发现报文</li>
+<li>凡是收到DHCP发现报文的DHCP服务器都发出DHCP提供报文（DHCP客户端可以收到多个DHCP提供报文）</li>
+<li>DHCP从几个DHCP服务器中选择一个，并向选择的DHCP服务器发送DHCP请求报文</li>
+<li>被选择的DHCP服务器发送确认报文。这个时候，DHCP客户就可以使用IP地址了。这是一种<strong>已绑定</strong>的状态，即DHCP客户的IP地址和硬件地址已经绑定了。这个时候DHCP客户就会根据服务器提供的租用期设置两个计时器，分别在0.5T和0.85T的时候，请求更新租用期。</li>
+<li>租用期过了一半，DHCP就会发送请求报文要求更新租用期</li>
+<li>DHCP服务器若同意，则发回确认报文，得到新的租用期，重新设置计时器</li>
+<li>若不同意，则发回否认报文。这时DHCP客户必须立即停止使用原来的IP地址，然后重新申请新的IP地址。</li>
+<li>若服务器不响应，则在0.85T的时候重新执行以上操作</li>
+<li>DHCP客户可以随时提前终止服务器所提供的租用期，只需要发送释放报文即可。</li>
+</ul>
+<h3 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h3><blockquote>
+<p>HTTP协议是无状态的，即同一个客户第二次访问同一个服务器上的页面的时候，服务器响应时间与第一次响应时间相同。</p>
+</blockquote>
+<p>HTTP请求报文是作为TCP三次握手的第三个报文的数据</p>
+<h4 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h4><p>非持续连接：每次请求完就会关闭TCP连接</p>
+<p>缺点：</p>
+<ul>
+<li>每请求一个文档就需要两倍RTT的开销。</li>
+<li><strong>每一次建立新的TCP连接</strong>都要分配缓存和变量<ul>
+<li>现在浏览器都提供了能够打开5-10个并行的TCP连接，每一个TCP连接处理一个客户请求</li>
+</ul>
+</li>
+</ul>
+<h4 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h4><p>使用持续连接：就是万维网服务器在发送响应后仍然在一段时间内保持这条连接，使同一个客户可以继续在这条连接上传送后续的HTTP报文</p>
+<p>两种工作方式：</p>
+<ul>
+<li>非流水线方式<ul>
+<li>特点：</li>
+<li>客户收到前一个响应后才能发出下一个请求</li>
+<li>缺点：</li>
+<li>服务器在发送完一个对象后，TCP连接会空闲，浪费资源</li>
+</ul>
+</li>
+<li>流水线方式<ul>
+<li>特点：</li>
+<li>客户收到HTTP响应报文之前就可以继续发送新的请求报文。</li>
+<li>优点：</li>
+<li>TCP连接的空闲时间减少</li>
+</ul>
+</li>
+</ul>
+<h4 id="两者区别"><a href="#两者区别" class="headerlink" title="两者区别"></a>两者区别</h4><p>（<a href="http://blog.csdn.net/forgotaboutgirl/article/details/6936982）" target="_blank" rel="noopener">http://blog.csdn.net/forgotaboutgirl/article/details/6936982）</a></p>
+<ul>
+<li>可扩展性</li>
+<li>缓存</li>
+<li>带宽优化</li>
+<li>长连接</li>
+<li>消息传递</li>
+<li>Host头域</li>
+<li>错误提示</li>
+<li>内容协商</li>
+</ul>
+<h4 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a>HTTP2.0</h4><p><strong>多路复用</strong></p>
+<p>HTTP2.0使用了多路复用的技术，做到同一个连接并发处理多个请求，而且并发请求的数量比HTTP1.1大了好几个数量级。</p>
+<p>当然HTTP1.1也可以多建立几个TCP连接，来支持处理更多并发的请求，但是创建TCP连接本身也是有开销的。</p>
+<p><strong>关于多路复用，可以稍微扯上NIO</strong></p>
+<p><strong>数据压缩</strong></p>
+<p>HTTP1.1不支持header数据的压缩，HTTP2.0使用HPACK算法对header的数据进行压缩，这样数据体积小了，在网络上传输就会更快。</p>
+<h2 id="输入URL之后的网络操作"><a href="#输入URL之后的网络操作" class="headerlink" title="输入URL之后的网络操作"></a>输入URL之后的网络操作</h2><p>输入URL之后的网络操作：<a href="https://segmentfault.com/a/1190000006879700" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006879700</a> </p>
+<p>DNS解析过程中同时存在UDP和TCP请求：<a href="http://www.cnblogs.com/549294286/p/5172435.html" target="_blank" rel="noopener">http://www.cnblogs.com/549294286/p/5172435.html</a></p>
+<ul>
+<li>DNS解析<ul>
+<li>可扯上为什么DNS解析过程中同时存在UDP和TCP请求</li>
+<li>可扯上DNS优化，即缓存 ：浏览器缓存，系统缓存，路由器缓存，IPS服务器缓存，根域名服务器缓存，顶级域名服务器缓存，主域名服务器缓存</li>
+<li>可扯上DNS负载均衡，即DNS重定向。CDN技术就是利用DNS重定向技术的，</li>
+</ul>
+</li>
+<li>建立TCP连接</li>
+<li>发送HTTP请求</li>
+<li>发送所需文件给客户端</li>
+<li>释放连接</li>
+<li>浏览器渲染WEB资源</li>
+</ul>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
+</div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/07/23/计网/计网总结/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/07/23/计网/计网总结/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/07/30/计网/Cookie与Session的作用与原理/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Cookie与Session的作用与原理
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/07/22/计网/HTTP状态码/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">HTTP</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/19/Android/学习Binder/" class="title">学习Binder</a></p>
+                            <p class="item-date"><time datetime="2017-08-19T02:25:11.000Z" itemprop="datePublished">2017-08-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/16/Android/项目组件化/" class="title">项目组件化流程</a></p>
+                            <p class="item-date"><time datetime="2017-08-16T02:22:11.000Z" itemprop="datePublished">2017-08-16</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/13/Android/进程回收策略/" class="title">进程回收策略</a></p>
+                            <p class="item-date"><time datetime="2017-08-13T08:22:11.000Z" itemprop="datePublished">2017-08-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/OKHttp/" class="title">OKHttp总结</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/跨进程EventBus/" class="title">EventBus跨进程思考</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java集合/">java集合</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/并发/">并发</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计网/">计网</a><span class="category-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java集合/">java集合</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm/">jvm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发/">并发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计网/">计网</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/java集合/" style="font-size: 10px;">java集合</a> <a href="/tags/jvm/" style="font-size: 20px;">jvm</a> <a href="/tags/并发/" style="font-size: 10px;">并发</a> <a href="/tags/计网/" style="font-size: 10px;">计网</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://blog.yvesluo.cc/">Yves</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://cristianoro7.github.io/">cristianoro</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 kiddot<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://kiddot.github.io/2017/07/23/计网/计网总结/';
+        
+        this.page.identifier = '计网/计网总结';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

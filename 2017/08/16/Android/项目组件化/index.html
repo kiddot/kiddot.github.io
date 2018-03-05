@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>项目组件化流程 | Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="项目组件化 什么是组件化开发？就是将一个app分成多个模块，每个模块都是一个组件（Module），开发的过程中我们可以让这些组件相互依赖或者单独调试部分组件等，但是最终发布的时候是将这些组件合并统一成一个apk，这就是组件化开发。  为什么要组件化开发？比较常见的架构都是一个界面就存在大量的业务逻辑，而业务逻辑中又有各种网络请求以及数据操作等，整个项目没有模块的概念，基本都是以业务逻辑划分文件夹来">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="项目组件化流程">
+<meta property="og:url" content="https://kiddot.github.io/2017/08/16/Android/项目组件化/index.html">
+<meta property="og:site_name" content="Share">
+<meta property="og:description" content="项目组件化 什么是组件化开发？就是将一个app分成多个模块，每个模块都是一个组件（Module），开发的过程中我们可以让这些组件相互依赖或者单独调试部分组件等，但是最终发布的时候是将这些组件合并统一成一个apk，这就是组件化开发。  为什么要组件化开发？比较常见的架构都是一个界面就存在大量的业务逻辑，而业务逻辑中又有各种网络请求以及数据操作等，整个项目没有模块的概念，基本都是以业务逻辑划分文件夹来">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://whvn.cc/6585">
+<meta property="og:updated_time" content="2018-03-05T16:26:59.244Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="项目组件化流程">
+<meta name="twitter:description" content="项目组件化 什么是组件化开发？就是将一个app分成多个模块，每个模块都是一个组件（Module），开发的过程中我们可以让这些组件相互依赖或者单独调试部分组件等，但是最终发布的时候是将这些组件合并统一成一个apk，这就是组件化开发。  为什么要组件化开发？比较常见的架构都是一个界面就存在大量的业务逻辑，而业务逻辑中又有各种网络请求以及数据操作等，整个项目没有模块的概念，基本都是以业务逻辑划分文件夹来">
+<meta name="twitter:image" content="https://whvn.cc/6585">
+    
+
+    
+        <link rel="alternate" href="/" title="Share" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Share</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">kiddot</h2>
+            <h3 id="title">Android Developer &amp; Coder</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/kiddot">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                25
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                5
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/kiddot" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/kiddo1024" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/dekai.liang.94" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://dribbble.com/dribbble" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Android/项目组件化" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://whvn.cc/6585" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            项目组件化流程
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/08/16/Android/项目组件化/">
+            <time datetime="2017-08-16T02:22:11.000Z" itemprop="datePublished">2017-08-16</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Android/">Android</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="项目组件化"><a href="#项目组件化" class="headerlink" title="项目组件化"></a>项目组件化</h1><blockquote>
+<p>什么是组件化开发？就是将一个app分成多个模块，每个模块都是一个组件（Module），开发的过程中我们可以让这些组件相互依赖或者单独调试部分组件等，但是最终发布的时候是将这些组件合并统一成一个apk，这就是组件化开发。</p>
+</blockquote>
+<h2 id="为什么要组件化开发？"><a href="#为什么要组件化开发？" class="headerlink" title="为什么要组件化开发？"></a>为什么要组件化开发？</h2><p>比较常见的架构都是一个界面就存在大量的业务逻辑，而业务逻辑中又有各种网络请求以及数据操作等，整个项目没有模块的概念，基本都是以业务逻辑划分文件夹来进行开发，这样的做法最大的缺点就是业务之间会比较容易产生耦合。</p>
+<p><img src="http://img.blog.csdn.net/20170522210912111?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3VpeWluZzcxMg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="单一工程模型下的业务关系"></p>
+<p>随着产品版本的迭代，业务越来越复杂之后，带来的问题会更明显：</p>
+<ul>
+<li><ol>
+<li>单一工程业务逻辑耦合度太高，容易改动一个地方会牵扯到其它本不应该相关的业务逻辑。</li>
+<li>随着工程越来越大，编译的时间会越来越久。</li>
+<li>团队协作开发会存在较多的冲突。</li>
+<li>不能灵活的对工程进行配置和组装.比如今天产品经理说加上这个功能,明天又说去掉,后天在加上.</li>
+</ol>
+</li>
+</ul>
+<h2 id="什么是组件化开发"><a href="#什么是组件化开发" class="headerlink" title="什么是组件化开发"></a>什么是组件化开发</h2><p>在单工程模型的基础上，将业务层中的各业务抽取出来，封装成响应的业务组件，将基础库的各部分抽取，封装成基础组件，而主工程就是一个可运行的app，作为各组件的入口。业务组件在组件模式下可以独立开发，而在集成模式下又可以变为arr包集成到“app壳工程”中，组成一个完整功能的APP</p>
+<p><img src="http://oeu3kvs3k.bkt.clouddn.com/2017-10-14%2015-15-24%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" alt="组件化工程模型"></p>
+<p>上图是组件化工程模型，下面是组件化工程中用到的名词的含义：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">名词</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">集成模式</td>
+<td style="text-align:center">所有的业务组件被“app壳工程”依赖，组成一个完整的APP；</td>
+</tr>
+<tr>
+<td style="text-align:center">组件模式</td>
+<td style="text-align:center">可以独立开发业务组件，每一个业务组件就是一个APP；</td>
+</tr>
+<tr>
+<td style="text-align:center">app壳工程</td>
+<td style="text-align:center">负责管理各个业务组件，和打包apk，没有具体的业务功能；</td>
+</tr>
+<tr>
+<td style="text-align:center">业务组件</td>
+<td style="text-align:center">根据公司具体业务而独立形成一个的工程；</td>
+</tr>
+<tr>
+<td style="text-align:center">功能组件</td>
+<td style="text-align:center">提供开发APP的某些基础功能，例如打印日志、树状图等；</td>
+</tr>
+<tr>
+<td style="text-align:center">Main组件</td>
+<td style="text-align:center">属于业务组件，指定APP启动页面、主界面；</td>
+</tr>
+<tr>
+<td style="text-align:center">Common组件</td>
+<td style="text-align:center">属于功能组件，支撑业务组件的基础，提供多数业务组件需要的功能，例如提供网络请求功能；</td>
+</tr>
+</tbody>
+</table>
+<p>组件化工程模型中，看似业务组件之间相对是独立的，但实际开发中多少会有些情况需要组件之间相互通信，那么这如果处理不好可能会带来一些依赖关系变得十分复杂的情况，甚至会出现一些潜在的风险，但是这种模型带来的好处还是十分明显的：</p>
+<ul>
+<li>1.加快业务的迭代速度，各业务模块更加独立。</li>
+<li>2.加快编译速度，提高开发效率</li>
+<li>3.降低团队成员熟悉项目成本，降低项目维护难度</li>
+</ul>
+<h2 id="组件化具体流程"><a href="#组件化具体流程" class="headerlink" title="组件化具体流程"></a>组件化具体流程</h2><h3 id="1-第一步：配置可自动将组件在Application和Library属性之间切换"><a href="#1-第一步：配置可自动将组件在Application和Library属性之间切换" class="headerlink" title="1.第一步：配置可自动将组件在Application和Library属性之间切换"></a>1.第一步：配置可自动将组件在Application和Library属性之间切换</h3><p>在Android studio中的Module主要有两种属性，分别为：</p>
+<ul>
+<li>Application属性，可以独立运行android程序<ul>
+<li>apply plugin: ‘com.android.application’</li>
+</ul>
+</li>
+<li>library属性：不可以独立运行，一般是android程序依赖的库文件<ul>
+<li>apply plugin: ‘com.android.library’</li>
+</ul>
+</li>
+</ul>
+<p>当我们在开发单独组件的时候，这个组件应该处于application模式，而当我们要将单独组件合并到主工程的时候，就需要将单独组从application模式改为library模式。为了做到一次修改，全局组件生效。在Android Studio项目的根目录下有一个gradle.properties 文件，这个文件主要用来配置Gradle settings。在这里gradle.properties添加了一行代码，定义一个属性isModule（是否是组件开发模式，true为是，false为否）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isModule.toBoolean()) &#123;    </span><br><span class="line">        apply plugin: <span class="string">'com.android.application'</span>&#125; </span><br><span class="line">          <span class="keyword">else</span> &#123;   </span><br><span class="line">               apply plugin: <span class="string">'com.android.library'</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-第二步：解决组件AndroidManifest和主工程AndroidManifest合并问题"><a href="#2-第二步：解决组件AndroidManifest和主工程AndroidManifest合并问题" class="headerlink" title="2.第二步：解决组件AndroidManifest和主工程AndroidManifest合并问题"></a>2.第二步：解决组件AndroidManifest和主工程AndroidManifest合并问题</h3><blockquote>
+<p>每个组件是由不同的成员单独开发的，这个时候组件就是一个独立的APP，那么这个组件就会有自己的“AndroidManifest.xml”，但是Android程序只有一个“AndroidManifest.xml”，当我们要把组件作为Library合并到主工程的时候，组件的“AndroidManifest.xml”和主工程的“AndroidManifest.xml”就会产生冲突，因为他们都有自己实现application类以及一些属性，还有自己的MAIN Activity，如果直接把张表合并到一起势必产生冲突。</p>
+</blockquote>
+<p>解决思路就是：每个组件维护两张表，一张用于组件单独开发时使用，另一张用于合并到主工程的注册表中，每当增加一个Android系统的四大组件时都要同时给两张表中添加。</p>
+<ul>
+<li>首先在组件的main文件夹（和java文件夹平级）下创建两个文件夹:</li>
+</ul>
+<p><img src="http://img2.100weidu.com/get?src=http://mmbiz.qpic.cn/mmbiz_png/ibuh47bPhianYAq9uhkSyKMlABUJVc2ypNKc7TqYdxP4bibzJJ1IVIzWK3iammtK9wyDkrqK5AnuicNuAGd4vCEuXhA/0?wx_fmt=png" alt="img"></p>
+<ul>
+<li><p>然后在每个组件的<em>build.gradle</em>中添加如下的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sourceSets &#123;</span><br><span class="line">    main &#123;        </span><br><span class="line">            <span class="keyword">if</span> (isModule.toBoolean()) &#123;</span><br><span class="line">            manifest.srcFile <span class="string">'src/main/debug/AndroidManifest.xml'</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            manifest.srcFile <span class="string">'src/main/release/AndroidManifest.xml'</span></span><br><span class="line">            <span class="comment">//release模式下排除debug文件夹中的所有Java文件</span></span><br><span class="line">            java &#123;</span><br><span class="line">                exclude <span class="string">'debug/**'</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这些代码的意思是：当在组件开发模式下，组件的注册表文件使用debug文件夹下的，其他情况使用release文件夹下的注册表文件；那么这两张表的区别在哪里？</p>
+<p>下面表示debug文件夹中的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;application</span><br><span class="line">    android:name=<span class="string">"debug.CarApplication"</span></span><br><span class="line">    android:icon=<span class="string">"@mipmap/ic_car_launcher"</span></span><br><span class="line">    android:label=<span class="string">"@string/car_name"</span></span><br><span class="line">    android:supportsRtl=<span class="string">"true"</span></span><br><span class="line">    android:theme=<span class="string">"@style/AppTheme"</span>&gt;</span><br><span class="line">    &lt;activity</span><br><span class="line">        android:name=<span class="string">".query.QueryActivity"</span></span><br><span class="line">        android:configChanges=<span class="string">"orientation|screenSize|keyboard"</span></span><br><span class="line">        android:screenOrientation=<span class="string">"portrait"</span></span><br><span class="line">        android:windowSoftInputMode=<span class="string">"adjustPan|stateHidden"</span>&gt;</span><br><span class="line">        &lt;intent-filter&gt;</span><br><span class="line">            &lt;action android:name=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span><br><span class="line"></span><br><span class="line">            &lt;category android:name=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span><br><span class="line">        intent-filter&gt;</span><br><span class="line">    activity&gt;</span><br><span class="line">    &lt;activity</span><br><span class="line">        android:name=<span class="string">".scan.ScanActivity"</span></span><br><span class="line">        android:screenOrientation=<span class="string">"portrait"</span> /&gt;</span><br><span class="line">application&gt;</span><br></pre></td></tr></table></figure>
+<p>下面是release文件夹中的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> &lt;application android:theme=<span class="string">"@style/AppTheme"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;activity</span><br><span class="line">        android:name=<span class="string">".query.QueryActivity"</span></span><br><span class="line">        android:configChanges=<span class="string">"orientation|screenSize|keyboard"</span></span><br><span class="line">        android:screenOrientation=<span class="string">"portrait"</span></span><br><span class="line">        android:theme=<span class="string">"@style/AppTheme"</span></span><br><span class="line">        android:windowSoftInputMode=<span class="string">"adjustPan|stateHidden"</span> /&gt;</span><br><span class="line">    &lt;activity</span><br><span class="line">        android:name=<span class="string">".scan.ScanActivity"</span></span><br><span class="line">        android:screenOrientation=<span class="string">"portrait"</span> /&gt;</span><br><span class="line">application&gt;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>debug文件夹中注册表的标签中指定了具体application类，而release文件夹中的则没有，</li>
+<li>debug文件夹中注册表的标签中添加一些application属性，而release文件夹中的则什么都没有添加；</li>
+<li>debug文件夹中的注册表指定QueryActivity为MAIN Activity，也就是要启动的 Activity，而release文件夹中的则没有；</li>
+</ol>
+<h3 id="3-第三步：解决组件和主工程的Application冲突问题以及组件单独开发初始化数据问题"><a href="#3-第三步：解决组件和主工程的Application冲突问题以及组件单独开发初始化数据问题" class="headerlink" title="3.第三步：解决组件和主工程的Application冲突问题以及组件单独开发初始化数据问题"></a>3.第三步：解决组件和主工程的Application冲突问题以及组件单独开发初始化数据问题</h3><blockquote>
+<p>当android程序启动时，android系统会为每个程序创建一个Application类的对象，并且只创建一个，application对象的生命周期是整个程序中最长的，它的生命周期就等于这个程序的生命周期。在默认情况下应用系统会自动生成Application 对象，但是如果我们自定义了Application，那就需要告知系统，实例化的时候，是实例化我们自定义的，而非默认的。</p>
+</blockquote>
+<p>Q:我们在组件化开发的时候每一个组件可能都会有一个自己的Application类的对象，如果我们在自己的组件中开发时需要获取全局的Context，一般都会直接获取application对象，但是当所有组件要打包合并在一起的时候就会出现问题，因为最后程序只有一个Application，我们组件中自己定义的Application肯定没法使用</p>
+<p>A:首先创建一个叫做Common的Library，这个Common库中主要包含整个项目用到公共基类、工具类、自定义View等，例如BaseActivity、BaseFragment、BaseApplication等，并且我们的每一个组件都要依赖这个Common库，现在主要讲Common库中的BaseApplication怎么定义，下面是BaseApplication中的部分代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;        </span><br><span class="line">     <span class="keyword">private</span> <span class="keyword">static</span> BaseApplication sInstance;        </span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">static</span> Context context;        </span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BaseApplication <span class="title">getIns</span><span class="params">()</span> </span>&#123;            </span><br><span class="line">                <span class="keyword">return</span> sInstance;</span><br><span class="line">     &#125;        </span><br><span class="line">       </span><br><span class="line">       <span class="meta">@Override</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;           </span><br><span class="line">             <span class="keyword">super</span>.onCreate();</span><br><span class="line">         sInstance = <span class="keyword">this</span>;</span><br><span class="line">         context = <span class="keyword">this</span>.getApplicationContext();            </span><br><span class="line">             <span class="keyword">if</span> (isAppDebug(context)) &#123;    <span class="comment">//只有debug模式才会打印日志</span></span><br><span class="line">             Logger.init(<span class="string">"Demo"</span>).logLevel(LogLevel.FULL);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             Logger.init(<span class="string">"Demo"</span>).logLevel(LogLevel.NONE);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>因为每个组件都依赖了Common库，所以每个组件都能够获取到BaseApplication.context，但是Android程序默认的是系统自己的Application这个类，要想使用自己的就要继承Application并且在AndroidManifest.xml中声明，因此我们先在自己的组件中创建一个组件Application并且继承于BaseApplication，然后在debug文件中的AndroidManifest.xml中声明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CarApplication</span> <span class="keyword">extends</span> <span class="title">BaseApplication</span> </span>&#123;    </span><br><span class="line">    </span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;        </span><br><span class="line">            <span class="keyword">super</span>.onCreate();</span><br><span class="line">        login();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样我们就可以在组件中使用全局的Context：BaseApplication.context了，但是还有一个问题，我们在自己的组件中定义了CarApplication，那么组件合并到主工程后，主工程也有自己的Application，这样又冲突了。一个解决思路跟上面类似，合并的时候排除掉就可以了，主要做法如下：</p>
+<p><img src="http://img2.100weidu.com/get?src=http://mmbiz.qpic.cn/mmbiz_png/ibuh47bPhianYAq9uhkSyKMlABUJVc2ypNWwFFsaicic7zyjbGIYpp4wI4vfpr4Y4ialdYEIhyDnBQ4TLwt6L4uLtgA/0?wx_fmt=png" alt="img"></p>
+<p>我们在java文件夹下再建一个debug文件夹，把组件自己的application放在这个文件夹中，然后在build.gradle添加这行代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sourceSets &#123;</span><br><span class="line">    main &#123;        </span><br><span class="line">            <span class="keyword">if</span> (isModule.toBoolean()) &#123;</span><br><span class="line">            manifest.srcFile <span class="string">'src/main/debug/AndroidManifest.xml'</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            manifest.srcFile <span class="string">'src/main/release/AndroidManifest.xml'</span></span><br><span class="line">            <span class="comment">//release模式下排除debug文件夹中的所有Java文件</span></span><br><span class="line">            java &#123;</span><br><span class="line">                exclude <span class="string">'debug/**'</span><span class="comment">//增加这里的代码</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样在合并到主项目时debug文件夹下的java文件就全部被排除了。并且你可以在组件的Application中做一些初始化的操作，比如登陆，然后把数据保存下来，供组件使用。</p>
+<h3 id="4-第四步：解决library重复依赖以及SDK和依赖的第三方库版本号控制问题"><a href="#4-第四步：解决library重复依赖以及SDK和依赖的第三方库版本号控制问题" class="headerlink" title="4.第四步：解决library重复依赖以及SDK和依赖的第三方库版本号控制问题"></a>4.第四步：解决library重复依赖以及SDK和依赖的第三方库版本号控制问题</h3><blockquote>
+<p>重复依赖问题其实在开发中经常会遇到，比如你 compile 了一个A，然后在这个库里面又 compile 了一个B，然后你的工程中又 compile 了一个同样的B，就依赖了两次。 </p>
+</blockquote>
+<p>默认情况下，如果是 aar 依赖，gradle 会自动帮我们找出新版本的库而抛弃旧版本的重复依赖。但是如果你使用的是 project 依赖，gradle 并不会去去重，最后打包就会出现代码中有重复的类了。</p>
+<p><strong>Library重复依赖的解决办法就是给整个工程提供统一的依赖第三方库的入口</strong>,可以建立一个Common库，这个库还有一个作用就是用来为整个项目提供统一的依赖第三方库的入口，我们把项目常用或者必须用到的库全部在Common库的build.gradle中依赖进来，例如Android support Library、网络库、图片加载库等，又因为每个组件都要依赖这个Common库，所以的build.gradle中就不在需要依赖任何其他库了，这样我们就有了统一的依赖第三方库的入口，添加、删除和升级库文件都只需要在Common库中去处理就好了。</p>
+<hr>
+<p>另外一个问题就是我们每个组件的build.gradle中都要配置一些属性，例如compileSdkVersion、buildToolsVersion还有defaultConfig等，如果我们需要修改项目的compileSdkVersion版本号，那就麻烦了，因为将会有很多组的build.gradle。所以要把这些build.gradle中都要配置的属性统一起来，类似于java中的静态常量，一处修改到处生效。在项目的build.gradle中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Define versions in a single place</span></span><br><span class="line"></span><br><span class="line">ext &#123;<span class="comment">// Sdk and tools</span></span><br><span class="line"> </span><br><span class="line">    buildToolsVersion = localBuildToolsVersion</span><br><span class="line">    compileSdkVersion = <span class="number">23</span></span><br><span class="line"> </span><br><span class="line">    minSdkVersion = <span class="number">16</span></span><br><span class="line"> </span><br><span class="line">    targetSdkVersion = <span class="number">23</span><span class="comment">//时间：2017.2.13；每次修改版本号都要添加修改时间</span></span><br><span class="line"></span><br><span class="line">    versionCode = <span class="number">1</span></span><br><span class="line"> </span><br><span class="line">    versionName = <span class="string">"1.0"</span></span><br><span class="line"></span><br><span class="line">    javaVersion = JavaVersion.VERSION_1_8</span><br><span class="line">    / App dependencies version</span><br><span class="line">        </span><br><span class="line">     supportLibraryVersion = <span class="string">"23.2.1"</span></span><br><span class="line"></span><br><span class="line">        retrofitVersion = <span class="string">"2.1.0"</span></span><br><span class="line"></span><br><span class="line">        glideVersion = <span class="string">"3.7.0"</span></span><br><span class="line"></span><br><span class="line">        loggerVersion = <span class="string">"1.15"</span></span><br><span class="line"></span><br><span class="line">        eventbusVersion = <span class="string">"3.0.0"</span></span><br><span class="line"></span><br><span class="line">        gsonVersion = <span class="string">"2.8.0"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在组件的build.gradle中引用这些值，下面是Common库的build.gradle代码会和组件的build.gradle有些许差异：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'com.android.library'</span>android &#123;    </span><br><span class="line">compileSdkVersion rootProject.ext.compileSdkVersion</span><br><span class="line">    buildToolsVersion rootProject.ext.buildToolsVersion</span><br><span class="line"></span><br><span class="line">defaultConfig &#123;    </span><br><span class="line">      minSdkVersion rootProject.ext.minSdkVersion</span><br><span class="line">    targetSdkVersion rootProject.ext.targetSdkVersion</span><br><span class="line">    versionCode rootProject.ext.versionCode</span><br><span class="line">    versionName rootProject.ext.versionName</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">buildTypes &#123;    </span><br><span class="line">      release &#123;        </span><br><span class="line">            minifyEnabled <span class="keyword">false</span></span><br><span class="line">        <span class="function">proguardFiles <span class="title">getDefaultProguardFile</span><span class="params">(<span class="string">'proguard-android.txt'</span>)</span>, 'proguard-rules.pro'</span></span><br><span class="line"><span class="function">      &#125;</span></span><br><span class="line"><span class="function">    &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">dependencies </span>&#123;    </span><br><span class="line">      <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">'libs'</span>, include: [<span class="string">'*.jar'</span>])</span></span></span><br><span class="line"><span class="function">    <span class="comment">//Android Support</span></span></span><br><span class="line"><span class="function">    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"</span></span><br><span class="line"><span class="function">    compile "com.android.support:design:$rootProject.supportLibraryVersion"</span></span><br><span class="line"><span class="function">    compile "com.android.support:percent:$rootProject.supportLibraryVersion"</span></span><br><span class="line"><span class="function">    <span class="comment">//网络请求相关</span></span></span><br><span class="line"><span class="function">    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"</span></span><br><span class="line"><span class="function">    compile "com.squareup.retrofit2:retrofit-mock:$rootProject.retrofitVersion"</span></span><br><span class="line"><span class="function">    compile "com.github.franmontiel:PersistentCookieJar:$rootProject.cookieVersion"</span></span><br><span class="line"><span class="function">    <span class="comment">//稳定的</span></span></span><br><span class="line"><span class="function">    compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"</span></span><br><span class="line"><span class="function">    compile "com.orhanobut:logger:$rootProject.loggerVersion"</span></span><br><span class="line"><span class="function">    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"</span></span><br><span class="line"><span class="function">    compile "com.google.code.gson:gson:$rootProject.gsonVersion"</span></span><br><span class="line"><span class="function">    <span class="comment">//不稳定的</span></span></span><br><span class="line"><span class="function">    compile "com.github.mzule.activityrouter:activityrouter:$rootProject.routerVersion"</span></span><br><span class="line"><span class="function">    compile "com.jude:easyrecyclerview:$rootProject.easyRecyclerVersion"&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这样我们修改compileSdkVersion、buildToolsVersion、defaultConfig的值或者依赖库文件的版本号都可以直接在项目的build.gradle文件中直接修改了，修改完后整个项目也就都改过来了。</p>
+<h3 id="5-第五步：跨Module跳转问题"><a href="#5-第五步：跨Module跳转问题" class="headerlink" title="5.第五步：跨Module跳转问题"></a>5.第五步：跨Module跳转问题</h3><blockquote>
+<p>在组件化开发的时候，我们不能在使用显示调用来跳转页面了，因为我们组件化的目的之一就是解决模块间的强依赖问题，组件跟组件之间完全没有任何依赖，假如现在我从A组件跳转到B组件，并且要携带参数跳转，这时候怎么办？</p>
+</blockquote>
+<p>这个时候可以引入“路由”的概念。关于路由，有很多开源的库，比如Arouter，ActivityRouter等，可以根据自己需要选择一个。</p>
+<h3 id="6-第六步：Module之间通信问题"><a href="#6-第六步：Module之间通信问题" class="headerlink" title="6.第六步：Module之间通信问题"></a>6.第六步：Module之间通信问题</h3><p>如果在B组件中要通知A组件刷新列表，就要想办法解决组件间的通信问题，这个使用EventBus就能解决。</p>
+<h3 id="7-资源名冲突问题"><a href="#7-资源名冲突问题" class="headerlink" title="7.资源名冲突问题"></a>7.资源名冲突问题</h3><p>因为我们拆分出了很多组件，在合并到主工程的时候就有可能会出现资源名冲突问题，比如A组件和B组件都定义了同一个资源名。这个可以在组件的build.gradle中添加如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resourcePrefix <span class="string">"组件名_"</span></span><br></pre></td></tr></table></figure>
+<p>设置了这个属性后有个问题，所有的资源名必须以指定的字符串做前缀，否则会报错，而且resourcePrefix这个值只能限定xml里面的资源，并不能限定图片资源，所有图片资源仍然需要手动去修改资源名。其实最好还是团队开发中增加资源命名规约，只要遵守这个命名规约就能规避资源名冲突问题。</p>
+<h2 id="组件化中可能会遇到的坑"><a href="#组件化中可能会遇到的坑" class="headerlink" title="组件化中可能会遇到的坑"></a>组件化中可能会遇到的坑</h2><h3 id="关于butterknife"><a href="#关于butterknife" class="headerlink" title="关于butterknife"></a>关于butterknife</h3><ul>
+<li>butterknife在library activity中的使用和注意事项<ul>
+<li>1、用R2代替R findviewid</li>
+<li>2、在click方法中同样使用R2，但是找id的时候使用R。</li>
+<li>3、特别注意library中switch-case的使用，在library中是不能使用switch- case 找id的，解决方法就是用if-else代替。</li>
+</ul>
+</li>
+<li>为什么要用R2代替R，而不能直接用R？因为在library里R.id.xxx不再是final类型了，也就不是常量了变成可变的，而注入是需要传入常量。R2则是从主工程中复制了一份R过来给library使用。</li>
+</ul>
+<h3 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h3><h2 id="结言"><a href="#结言" class="headerlink" title="结言"></a>结言</h2><p>模块化是一个繁琐，枯燥，耗费时间长，通俗来说，时间和成果不成正比。进行模块化之前一定要思考是否项目真的需要，是不是单纯为了炫技。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
+</div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/08/16/Android/项目组件化/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/08/16/Android/项目组件化/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/08/19/Android/学习Binder/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    学习Binder
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/08/13/Android/进程回收策略/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">进程回收策略</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/19/Android/学习Binder/" class="title">学习Binder</a></p>
+                            <p class="item-date"><time datetime="2017-08-19T02:25:11.000Z" itemprop="datePublished">2017-08-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/16/Android/项目组件化/" class="title">项目组件化流程</a></p>
+                            <p class="item-date"><time datetime="2017-08-16T02:22:11.000Z" itemprop="datePublished">2017-08-16</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/13/Android/进程回收策略/" class="title">进程回收策略</a></p>
+                            <p class="item-date"><time datetime="2017-08-13T08:22:11.000Z" itemprop="datePublished">2017-08-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/OKHttp/" class="title">OKHttp总结</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/跨进程EventBus/" class="title">EventBus跨进程思考</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java集合/">java集合</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/并发/">并发</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计网/">计网</a><span class="category-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java集合/">java集合</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm/">jvm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发/">并发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计网/">计网</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/java集合/" style="font-size: 10px;">java集合</a> <a href="/tags/jvm/" style="font-size: 20px;">jvm</a> <a href="/tags/并发/" style="font-size: 10px;">并发</a> <a href="/tags/计网/" style="font-size: 10px;">计网</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://blog.yvesluo.cc/">Yves</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://cristianoro7.github.io/">cristianoro</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 kiddot<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://kiddot.github.io/2017/08/16/Android/项目组件化/';
+        
+        this.page.identifier = 'Android/项目组件化';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

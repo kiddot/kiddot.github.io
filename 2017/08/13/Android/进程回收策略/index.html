@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>进程回收策略 | Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="进程回收策略笔记参考自：https://yq.aliyun.com/articles/201636?utm_content=m_30411  LowMemoryKiller(低内存杀手)是Andorid基于oomKiller原理所扩展的一个多层次oomKiller，OOMkiller(Out Of Memory Killer)是在Linux系统无法分配新内存的时候，选择性杀掉进程，到oom的时候，">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程回收策略">
+<meta property="og:url" content="https://kiddot.github.io/2017/08/13/Android/进程回收策略/index.html">
+<meta property="og:site_name" content="Share">
+<meta property="og:description" content="进程回收策略笔记参考自：https://yq.aliyun.com/articles/201636?utm_content=m_30411  LowMemoryKiller(低内存杀手)是Andorid基于oomKiller原理所扩展的一个多层次oomKiller，OOMkiller(Out Of Memory Killer)是在Linux系统无法分配新内存的时候，选择性杀掉进程，到oom的时候，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://whvn.cc/4959">
+<meta property="og:updated_time" content="2018-03-05T16:22:14.011Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进程回收策略">
+<meta name="twitter:description" content="进程回收策略笔记参考自：https://yq.aliyun.com/articles/201636?utm_content=m_30411  LowMemoryKiller(低内存杀手)是Andorid基于oomKiller原理所扩展的一个多层次oomKiller，OOMkiller(Out Of Memory Killer)是在Linux系统无法分配新内存的时候，选择性杀掉进程，到oom的时候，">
+<meta name="twitter:image" content="https://whvn.cc/4959">
+    
+
+    
+        <link rel="alternate" href="/" title="Share" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Share</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">kiddot</h2>
+            <h3 id="title">Android Developer &amp; Coder</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/kiddot">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                25
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                5
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/kiddot" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/kiddo1024" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/dekai.liang.94" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://dribbble.com/dribbble" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Android/进程回收策略" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://whvn.cc/4959" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            进程回收策略
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/08/13/Android/进程回收策略/">
+            <time datetime="2017-08-13T08:22:11.000Z" itemprop="datePublished">2017-08-13</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Android/">Android</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="进程回收策略"><a href="#进程回收策略" class="headerlink" title="进程回收策略"></a>进程回收策略</h1><p>笔记参考自：<a href="https://yq.aliyun.com/articles/201636?utm_content=m_30411" target="_blank" rel="noopener">https://yq.aliyun.com/articles/201636?utm_content=m_30411</a></p>
+<blockquote>
+<p>LowMemoryKiller(低内存杀手)是Andorid基于oomKiller原理所扩展的一个多层次oomKiller，OOMkiller(Out Of Memory Killer)是在Linux系统无法分配新内存的时候，选择性杀掉进程，到oom的时候，系统可能已经不太稳定，而LowMemoryKiller是一种根据内存阈值级别触发的内存回收的机制，在系统可用内存较低时，就会选择性杀死进程的策略，相对OOMKiller，更加灵活。</p>
+</blockquote>
+<h1 id="OOMKiller"><a href="#OOMKiller" class="headerlink" title="OOMKiller"></a>OOMKiller</h1><blockquote>
+<p>​    当我们启动应用时，需要向系统申请内存，即进行malloc的操作，进行malloc操作如果返回一个非NULL的操作表示申请到了可用的内存。事实上，这个地方是可能存在bug的。Linux有一种内存优化机制，即：允许程序申请比系统可用内存更多的内存（术语：overcommit），但是Linux并不保证这些内存马上可用，如果凑巧你申请到的内存中在你需要使用的时候还没有完全释放出来，这个时候就会触发OOM killer了。</p>
+</blockquote>
+<p>​    系统的物理内存往往是有限的，这就需要在使用过程中杀掉一些无用的进程以腾出新的内存。在Android系统中，AmS需要和Linux操作系统有个约定，即将要谈到的Linux内核的内存管理控制系统是如何通知AMS内存不足的。</p>
+<p>​    Java虚拟机运行时都有各自独立的内存空间，应用程序A发生Out Of Memory并不意味着应用程序B也会发生Out Of Memory，很有可能仅仅是A程序用光了自己内存的上限，而系统内存却还是有的。所以说，单纯的AmS是无法获知系统内存是否低的。</p>
+<p>​    Android系统如何知道系统内存低或者系统内存不够了？因为Android底层的Linux未采用磁盘虚拟内存机制，所以应用程序能够使用的内存大小完全取决于实际物理内存大小。</p>
+<p>​    <img src="http://img.blog.csdn.net/20170911093523283?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveGlhbmd6aGlob25nOA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>​    在Android中运行了一个OOM 进程，即Out Of Memory。该进程启动时会首先向Linux内核中把自己注册为一个OOM Killer，即当Linux内核的内存管理模块检测到系统内存低的时候就会通知已经注册的OOM进程，然后这些OOM Killer就可以根据各种规则进行内存释放了，当然也可以什么都不做。</p>
+<p>​    Android中的OOM Killer进程是仅仅适用于Android应用程序的，该进程在运行时，AmS需要把每一个应用程序的oom_adj值告知给Killer。这个值的范围在－16到15，值越低，说明越重要，这个值类似于Linux系统中的进程nice值，只是在标准的Linux中，有其自己的一套Killer机制。</p>
+<h1 id="LowMemoryKiller"><a href="#LowMemoryKiller" class="headerlink" title="LowMemoryKiller"></a>LowMemoryKiller</h1><p>在理解OOMKiller的时候注意两点：</p>
+<ol>
+<li><strong>LowMemoryKiller是被动杀死进程；</strong></li>
+<li><strong>Android应用通过AMS，利用proc文件系统更新进程信息。</strong></li>
+</ol>
+<h2 id="Android-优先级更新"><a href="#Android-优先级更新" class="headerlink" title="Android 优先级更新"></a>Android 优先级更新</h2><blockquote>
+<p>​    APP中很多操作都可能会影响进程列表的优先级，比如退到后台、移到前台等，都会潜在的影响进程的优先级，我们知道Lowmemorykiller是通过遍历内核的进程结构体队列，选择优先级低的杀死，那么APP操作是如何写入到内核空间的呢？Linxu有用户间跟内核空间的区分，无论是APP还是系统服务，都是运行在用户空间，严格说用户控件的操作是无法直接影响内核空间的，更不用说更改进程的优先级。</p>
+</blockquote>
+<p>​    其实这里是通过了Linux中的一个proc文件体统，proc文件系统可以简单的看成是内核空间映射成用户可以操作的文件系统，当然不是所有进程都有权利操作，通过proc文件系统，用户空间的进程就能够修改内核空间的数据，比如修改进程的优先级。</p>
+<p>​    在Android5.0之前的系统是AMS进程直接修改的，5.0之后，是修改优先级的操作被封装成了一个独立的服务-lmkd，lmkd服务位于用户空间，其作用层次同AMS、WMS类似，就是一个普通的系统服务。</p>
+<p><strong>模拟一个场景，APP只有一个Activity，我们主动finish掉这个Activity，APP就回到了后台，这里要记住，虽然没有可用的Activity，但是APP本身是没哟死掉的，这就是所谓的热启动</strong></p>
+<p>针对4.3系统的流程如下：</p>
+<p><img src="http://img.blog.csdn.net/20170911110910100?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveGlhbmd6aGlob25nOA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>针对5.0以上的系统，流程如下：</p>
+<p><img src="http://img.blog.csdn.net/20170911111518785?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveGlhbmd6aGlob25nOA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="LowMemoryKiller内核区块"><a href="#LowMemoryKiller内核区块" class="headerlink" title="LowMemoryKiller内核区块"></a>LowMemoryKiller内核区块</h2><blockquote>
+<p>LomemoryKiller属于一个内核驱动模块，主要功能是：在系统内存不足的时候扫描进程队列，找到低优先级（也许说性价比低更合适）的进程并杀死，以达到释放内存的目的。</p>
+</blockquote>
+<p>LomemoryKiller是如何找到低优先级进程，并杀死的。管家代码就在lowmem_shrink函数里面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lowmem_shrink</span><span class="params">(<span class="keyword">int</span> nr_to_scan, gfp_t gfp_mask)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    struct task_struct *p;</span><br><span class="line">    。。。</span><br><span class="line">    关键点<span class="number">1</span> 找到当前的内存对应的阈值</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; array_size; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (other_free &lt; lowmem_minfree[i] &amp;&amp;</span><br><span class="line">            other_file &lt; lowmem_minfree[i]) &#123;</span><br><span class="line">            min_adj = lowmem_adj[i];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    。。。</span><br><span class="line">    关键点<span class="number">2</span> 找到优先级低于这个阈值的进程，并杀死</span><br><span class="line"></span><br><span class="line">    read_lock(&amp;tasklist_lock);</span><br><span class="line">    for_each_process(p) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;oomkilladj &lt; min_adj || !p-&gt;mm)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        tasksize = get_mm_rss(p-&gt;mm);</span><br><span class="line">        <span class="keyword">if</span> (tasksize &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (selected) &#123;</span><br><span class="line">            <span class="keyword">if</span> (p-&gt;oomkilladj &lt; selected-&gt;oomkilladj)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (p-&gt;oomkilladj == selected-&gt;oomkilladj &amp;&amp;</span><br><span class="line">                tasksize &lt;= selected_tasksize)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        selected = p;</span><br><span class="line">        selected_tasksize = tasksize;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(selected != NULL) &#123;</span><br><span class="line">        force_sig(SIGKILL, selected);</span><br><span class="line">        rem -= selected_tasksize;</span><br><span class="line">    &#125;</span><br><span class="line">    lowmem_print(<span class="number">4</span>, <span class="string">"lowmem_shrink %d, %x, return %d\n"</span>, nr_to_scan, gfp_mask, rem);</span><br><span class="line">    read_unlock(&amp;tasklist_lock);</span><br><span class="line">    <span class="keyword">return</span> rem;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过给应用设置内存对应的阈值，通过Linux的中的信号量，发送SIGKILL信号直接将进程杀死。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
+</div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/08/13/Android/进程回收策略/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/08/13/Android/进程回收策略/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/08/16/Android/项目组件化/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    项目组件化流程
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/08/11/Android/OKHttp/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">OKHttp总结</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/19/Android/学习Binder/" class="title">学习Binder</a></p>
+                            <p class="item-date"><time datetime="2017-08-19T02:25:11.000Z" itemprop="datePublished">2017-08-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/16/Android/项目组件化/" class="title">项目组件化流程</a></p>
+                            <p class="item-date"><time datetime="2017-08-16T02:22:11.000Z" itemprop="datePublished">2017-08-16</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/13/Android/进程回收策略/" class="title">进程回收策略</a></p>
+                            <p class="item-date"><time datetime="2017-08-13T08:22:11.000Z" itemprop="datePublished">2017-08-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/OKHttp/" class="title">OKHttp总结</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/跨进程EventBus/" class="title">EventBus跨进程思考</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java集合/">java集合</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/并发/">并发</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计网/">计网</a><span class="category-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java集合/">java集合</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm/">jvm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发/">并发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计网/">计网</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/java集合/" style="font-size: 10px;">java集合</a> <a href="/tags/jvm/" style="font-size: 20px;">jvm</a> <a href="/tags/并发/" style="font-size: 10px;">并发</a> <a href="/tags/计网/" style="font-size: 10px;">计网</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://blog.yvesluo.cc/">Yves</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://cristianoro7.github.io/">cristianoro</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 kiddot<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://kiddot.github.io/2017/08/13/Android/进程回收策略/';
+        
+        this.page.identifier = 'Android/进程回收策略';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

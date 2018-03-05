@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>WebView总结 | Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="WebView总结WebView的基本使用 权限  12345678910 &amp;lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&amp;gt;&amp;lt;!--另外附上一些可能会用到的权限：--&amp;gt;&amp;lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWOR">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebView总结">
+<meta property="og:url" content="https://kiddot.github.io/2017/08/09/Android/WebView总结/index.html">
+<meta property="og:site_name" content="Share">
+<meta property="og:description" content="WebView总结WebView的基本使用 权限  12345678910 &amp;lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&amp;gt;&amp;lt;!--另外附上一些可能会用到的权限：--&amp;gt;&amp;lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWOR">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://whvn.cc/295490">
+<meta property="og:updated_time" content="2018-03-05T16:19:18.350Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WebView总结">
+<meta name="twitter:description" content="WebView总结WebView的基本使用 权限  12345678910 &amp;lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&amp;gt;&amp;lt;!--另外附上一些可能会用到的权限：--&amp;gt;&amp;lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWOR">
+<meta name="twitter:image" content="https://whvn.cc/295490">
+    
+
+    
+        <link rel="alternate" href="/" title="Share" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Share</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">kiddot</h2>
+            <h3 id="title">Android Developer &amp; Coder</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/kiddot">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                25
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                5
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/kiddot" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/kiddo1024" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/dekai.liang.94" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://dribbble.com/dribbble" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Android/WebView总结" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://whvn.cc/295490" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            WebView总结
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/08/09/Android/WebView总结/">
+            <time datetime="2017-08-09T08:22:11.000Z" itemprop="datePublished">2017-08-09</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Android/">Android</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="WebView总结"><a href="#WebView总结" class="headerlink" title="WebView总结"></a>WebView总结</h1><h2 id="WebView的基本使用"><a href="#WebView的基本使用" class="headerlink" title="WebView的基本使用"></a>WebView的基本使用</h2><ul>
+<li>权限</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> &lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</span><br><span class="line">&lt;!--另外附上一些可能会用到的权限：--&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_NETWORK_STATE"</span> /&gt;</span><br><span class="line">&lt;!--获取网络状态权限（情景：WebView联网前，应检查当前网络状态）--&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;</span><br><span class="line">&lt;!--通过WiFi或移动基站的方式获取用户错略的经纬度信息--&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span> /&gt;</span><br><span class="line">&lt;!--通过GPS芯片接收卫星的定位信息权限（情景：结合HTML5使用Geolocation API获取位置时）--&gt;</span><br><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span><br><span class="line">&lt;!--读写存储权限（情景：拍照/选择图片，涉及图片读取、编辑、压缩等功能时）--&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>常用配置</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">WebSettings  mWebSetting = mWebView.getSettings();  <span class="comment">//获取WebSetting</span></span><br><span class="line">setJavaScriptEnabled(<span class="keyword">true</span>);<span class="comment">//让WebView支持JavaScript</span></span><br><span class="line">setDomStorageEnabled(<span class="keyword">true</span>);<span class="comment">//启用H5 DOM API （默认false）</span></span><br><span class="line">setDatabaseEnabled(<span class="keyword">true</span>);<span class="comment">//启用数据库api（默认false）可结合 setDatabasePath 设置路径</span></span><br><span class="line">setCacheMode(WebSettings.LOAD_DEFAULT)<span class="comment">//设置缓存模式</span></span><br><span class="line">setAppCacheEnabled(<span class="keyword">true</span>);<span class="comment">//启用应用缓存（默认false）可结合 setAppCachePath 设置缓存路径</span></span><br><span class="line">setAppCacheMaxSize()<span class="comment">//已过时，高版本API上，系统会自行分配</span></span><br><span class="line">setPluginsEnabled(<span class="keyword">true</span>);  <span class="comment">//设置插件支持</span></span><br><span class="line">setRenderPriority(RenderPriority.HIGH);  <span class="comment">//提高渲染的优先级</span></span><br><span class="line">setUseWideViewPort(<span class="keyword">true</span>);  <span class="comment">//将图片调整到适合webview的大小</span></span><br><span class="line">setLoadWithOverviewMode(<span class="keyword">true</span>); <span class="comment">// 缩放至屏幕的大小</span></span><br><span class="line">setSupportZoom(<span class="keyword">true</span>);  <span class="comment">//支持缩放，默认为true</span></span><br><span class="line">setBuiltInZoomControls(<span class="keyword">true</span>); <span class="comment">//设置内置的缩放控件（若SupportZoom为false，该设置项无效）</span></span><br><span class="line">setDisplayZoomControls(<span class="keyword">false</span>); <span class="comment">//隐藏原生的缩放控件</span></span><br><span class="line">setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN); <span class="comment">//支持内容重新布局</span></span><br><span class="line">supportMultipleWindows();  <span class="comment">//支持多窗口</span></span><br><span class="line">setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);  <span class="comment">//关闭webview中缓存</span></span><br><span class="line">setAllowFileAccess(<span class="keyword">true</span>);  <span class="comment">//设置可以访问文件</span></span><br><span class="line">setNeedInitialFocus(<span class="keyword">true</span>); <span class="comment">//当webview调用requestFocus时为webview设置节点</span></span><br><span class="line">setJavaScriptCanOpenWindowsAutomatically(<span class="keyword">true</span>); <span class="comment">//支持通过JS打开新窗口</span></span><br><span class="line">setLoadsImagesAutomatically(<span class="keyword">true</span>);  <span class="comment">//自动加载图片</span></span><br><span class="line">setDefaultTextEncodingName(<span class="string">"utf-8"</span>);<span class="comment">//设置编码格式</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>加载页面的三种方式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//网页</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String URL_NET = <span class="string">"http://www.google.com"</span>; <span class="comment">// 记得加 "http://"</span></span><br><span class="line"><span class="comment">//assets 中的 html 资源</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String URL_LOCAL =<span class="string">"file:///android_asset/xxx.html路径"</span>; </span><br><span class="line"><span class="comment">//SD 卡中的 html 资源</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String URL_SD_CARD =<span class="string">"content://com.android.htmlfileprovider/mnt/sdcard/xxx.html"</span>; </span><br><span class="line">mWebView.loadUrl(URL_NET);</span><br><span class="line">mWebView.loadUrl(URL_LOCAL);</span><br><span class="line">mWebView.loadUrl(URL_SD_CARD);</span><br></pre></td></tr></table></figure>
+<h2 id="WebViewClient-amp-WebChromeClient"><a href="#WebViewClient-amp-WebChromeClient" class="headerlink" title="WebViewClient &amp; WebChromeClient"></a>WebViewClient &amp; WebChromeClient</h2><h3 id="WebViewClient主要用于帮助webview处理各种通知和请求时间"><a href="#WebViewClient主要用于帮助webview处理各种通知和请求时间" class="headerlink" title="WebViewClient主要用于帮助webview处理各种通知和请求时间"></a>WebViewClient主要用于帮助webview处理各种通知和请求时间</h3><ul>
+<li>shouldOverrideUrlLoading 加载时调用，可捕获url</li>
+<li>onPageStart 开始加载时调用</li>
+<li>onPageFinish 加载完成时调用</li>
+<li>onReceiveError 接收到错误信息时调用，通常用来处理404等加载错误， <strong>但是在低于API23时，该方法失效，可能是大于API23不再接受网页连接错误，而是WebView自身的错误</strong></li>
+</ul>
+<h3 id="WebChromeClient用于辅助WebView处理JS的对话框，网站图标，位置，加载进度等信息"><a href="#WebChromeClient用于辅助WebView处理JS的对话框，网站图标，位置，加载进度等信息" class="headerlink" title="WebChromeClient用于辅助WebView处理JS的对话框，网站图标，位置，加载进度等信息"></a>WebChromeClient用于辅助WebView处理JS的对话框，网站图标，位置，加载进度等信息</h3><ul>
+<li>onProgressChanged 加载进度</li>
+<li>onReceivedTitle、onReceivedIcon 获取网页标题和图标</li>
+</ul>
+<h2 id="WebView与JS的交互"><a href="#WebView与JS的交互" class="headerlink" title="WebView与JS的交互"></a>WebView与JS的交互</h2><blockquote>
+<p>前提条件：setJavaScriptEnabled(true)</p>
+</blockquote>
+<ul>
+<li><p>调用JS方法</p>
+<p><strong>mWebView.loadUrl(“javascript: 方法名(‘“+参数+”‘)”);</strong></p>
+</li>
+<li><p>js调用android方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//使用方法</span></span><br><span class="line"> mWebView.addJavascriptInterface(MethodObject,<span class="string">"name"</span>);</span><br><span class="line"> <span class="comment">//还需要写一个方法类</span></span><br><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">MethodObject</span> <span class="keyword">extends</span> <span class="title">Object</span> </span>&#123;</span><br><span class="line">    <span class="comment">//无参函数，js中通过：var str = window.name.HtmlcallJava(); 获取到</span></span><br><span class="line">    <span class="meta">@JavascriptInterface</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">HtmlcallJava</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Html call Java"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//有参函数，js中通过：window.jsObj.HtmlcallJava2("IT-homer blog");</span></span><br><span class="line">    <span class="meta">@JavascriptInterface</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">HtmlcallJava2</span><span class="params">(<span class="keyword">final</span> String param)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Html call Java : "</span> + param;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="WebView优化"><a href="#WebView优化" class="headerlink" title="WebView优化"></a>WebView优化</h2><h3 id="1-页面加载速度"><a href="#1-页面加载速度" class="headerlink" title="1.页面加载速度"></a>1.页面加载速度</h3><blockquote>
+<p>影响页面加载速度的因素有非常多，每次加载的过程中都会有较多的网络请求，除了 web 页面自身的 URL 请求，还会有 web 页面外部引用的JS、CSS、字体、图片等等都是个独立的 http 请求。这些请求都是串行的，这些请求加上浏览器的解析、渲染时间就会导致 WebView 整体加载时间变长</p>
+</blockquote>
+<ul>
+<li><h4 id="选择合适的-WebView-缓存（二次加载速度优化）"><a href="#选择合适的-WebView-缓存（二次加载速度优化）" class="headerlink" title="选择合适的 WebView 缓存（二次加载速度优化）"></a>选择合适的 WebView 缓存（二次加载速度优化）</h4><ul>
+<li><p><strong>WebView缓存</strong>分为：页面缓存和数据缓存。<strong>页面缓存</strong>指加载网页时，对页面或资源数据的缓存（一般使用RE管理器进入目录： “/data/data/(packageName)/cache/org.chromium.android_webview“可看 ）。<strong>数据缓存</strong>又分为 AppCache 与 DOM Storage 。AppCache可以有选择地缓存我们所想要缓存的东西；DOM Storage 则是HTML5的一个缓存机制，常用于存储简单的表单数据</p>
+</li>
+<li><p>WebView的缓存模式</p>
+<p>|     LOAD_CACHE_ONLY     |             不使用网络，只读取本地缓存数据              |<br>| :———————: | :————————————–: |<br>|      LOAD_DEFAULT       |        根据cache-control决定是否从网络上取数据        |<br>|    LOAD_CACHE_NORMAL    | API level 17中已经废弃, 从API level 11开始作用同LOAD_DEFAULT模式 |<br>|      LOAD_NO_CACHE      |              不使用缓存，只从网络获取数据              |<br>| LOAD_CACHE_ELSE_NETWORK |    只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据     |</p>
+<p>​</p>
+</li>
+</ul>
+</li>
+<li><p>缓存的数据转移到SD卡</p>
+<p>重写Context 类中的getCacheDir方法即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">super</span>.onCreate();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))&#123;</span><br><span class="line">           File externalStorageDir = Environment.getExternalStorageDirectory();</span><br><span class="line">           <span class="keyword">if</span> (externalStorageDir != <span class="keyword">null</span>)&#123;</span><br><span class="line">               <span class="comment">// &#123;SD_PATH&#125;/Android/data/</span></span><br><span class="line">               extStorageAppBasePath = <span class="keyword">new</span> File(externalStorageDir.getAbsolutePath() +</span><br><span class="line">                       File.separator +<span class="string">"Android"</span> + File.separator + <span class="string">"data"</span>+File.separator + getPackageName());</span><br><span class="line">               Log.i(TAG,extStorageAppBasePath+<span class="string">"====="</span>);</span><br><span class="line"></span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (extStorageAppBasePath != <span class="keyword">null</span>)&#123;</span><br><span class="line">               extStorageAppCachePath = <span class="keyword">new</span> File(extStorageAppBasePath.getAbsolutePath()+File.separator + <span class="string">"webViewCache"</span>);</span><br><span class="line">               Log.d(<span class="string">"extStorageAppCachePath"</span>,<span class="string">"extStorageAppCachePath = "</span>+extStorageAppCachePath);</span><br><span class="line">               <span class="keyword">boolean</span> isCachePathAvailable = <span class="keyword">true</span>;</span><br><span class="line">               <span class="keyword">if</span> (!extStorageAppCachePath.exists())&#123;</span><br><span class="line">                   isCachePathAvailable = extStorageAppCachePath.mkdirs();</span><br><span class="line">                   <span class="keyword">if</span> (!isCachePathAvailable)&#123;</span><br><span class="line">                       extStorageAppCachePath = <span class="keyword">null</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@Override
+public File getCacheDir() {
+
+    if (extStorageAppCachePath != null){
+        return extStorageAppCachePath;
+    }else{
+        return super.getCacheDir();
+    }
+}
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  ​</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- **资源预加载**（首次速度优化）</span><br><span class="line"></span><br><span class="line">&gt; 缓存技术，能优化二次启动 WebView 的加载速度，那首次加载 H5 页面的速度该怎么优化?一种思路就是外部依赖的 JS、CSS、图片等资源先提前在wifi环境下先预载好</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">WebView mWebView = (WebView) findViewById(R.id.webview);</span><br><span class="line">mWebView.setWebViewClient(new WebViewClient() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public WebResourceResponse shouldInterceptRequest(WebView webView, final String url) &#123;</span><br><span class="line">                WebResourceResponse response = null;</span><br><span class="line">              	// 检查该资源是否已经提前下载完成。我采用的策略是在应用启动时，用户在 wifi 的网络环境下				// 提前下载 H5 页面需要的资源。</span><br><span class="line">                boolean resDown = JSHelper.isURLDownValid(url);</span><br><span class="line">                if (resDown) &#123;</span><br><span class="line">                    jsStr = JsjjJSHelper.getResInputStream(url);</span><br><span class="line">                    if (url.endsWith(&quot;.png&quot;)) &#123;</span><br><span class="line">                        response = getWebResourceResponse(url, &quot;image/png&quot;, &quot;.png&quot;);</span><br><span class="line">                    &#125; else if (url.endsWith(&quot;.gif&quot;)) &#123;</span><br><span class="line">                        response = getWebResourceResponse(url, &quot;image/gif&quot;, &quot;.gif&quot;);</span><br><span class="line">                    &#125; else if (url.endsWith(&quot;.jpg&quot;)) &#123;</span><br><span class="line">                        response = getWebResourceResponse(url, &quot;image/jepg&quot;, &quot;.jpg&quot;);</span><br><span class="line">                    &#125; else if (url.endsWith(&quot;.jepg&quot;)) &#123;</span><br><span class="line">                        response = getWebResourceResponse(url, &quot;image/jepg&quot;, &quot;.jepg&quot;);</span><br><span class="line">                    &#125; else if (url.endsWith(&quot;.js&quot;) &amp;&amp; jsStr != null) &#123;</span><br><span class="line">                        response = getWebResourceResponse(&quot;text/javascript&quot;, &quot;UTF-8&quot;, &quot;.js&quot;);</span><br><span class="line">                    &#125; else if (url.endsWith(&quot;.css&quot;) &amp;&amp; jsStr != null) &#123;</span><br><span class="line">                        response = getWebResourceResponse(&quot;text/css&quot;, &quot;UTF-8&quot;, &quot;.css&quot;);</span><br><span class="line">                    &#125; else if (url.endsWith(&quot;.html&quot;) &amp;&amp; jsStr != null) &#123;</span><br><span class="line">                        response = getWebResourceResponse(&quot;text/html&quot;, &quot;UTF-8&quot;, &quot;.html&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                // 若 response 返回为 null , WebView 会自行请求网络加载资源。 </span><br><span class="line">                return response;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">private WebResourceResponse getWebResourceResponse(String url, String mime, String style) &#123;</span><br><span class="line">        WebResourceResponse response = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            response = new WebResourceResponse(mime, &quot;UTF-8&quot;, new FileInputStream(new File(getJSPath() + TPMD5.md5String(url) + style)));</span><br><span class="line">        &#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">public String getJsjjJSPath() &#123;</span><br><span class="line">        String splashTargetPath = JarEnv.sApplicationContext.getFilesDir().getPath() + &quot;/JS&quot;;</span><br><span class="line">        if (!TPFileSysUtil.isDirFileExist(splashTargetPath)) &#123;</span><br><span class="line">            TPFileSysUtil.createDir(splashTargetPath);</span><br><span class="line">        &#125;</span><br><span class="line">        return splashTargetPath + &quot;/&quot;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JS 脚本本地化（首次加载优化）</p>
+<blockquote>
+<p>​比预加载更粗暴的优化方法是直接将常用的 JS 脚本本地化，直接打包放入 apk 中。比如 H5 页面获取用户信息，设置标题等通用方法，就可以直接写入一个 JS 文件，放入 asserts 文件夹，在 WebView 调用了onPageFinished() 方法后进行加载。但是，<strong>该 JS 文件中需要写入一个 JS 文件载入完毕的事件</strong></p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>使用第三方WebView内核</li>
+</ul>
+<blockquote>
+<p>Android 4.4 版本 Google 使用了Chromium 替代 Webkit 作为 WebView 内核,<strong>但是我们可以使用腾讯集成的SDK，就可以使用X5内核了</strong>，更换第三方内核速度之后各方面速度都会有较大的提升</p>
+</blockquote>
+<h3 id="2-内存泄露-amp-amp-内存优化"><a href="#2-内存泄露-amp-amp-内存优化" class="headerlink" title="2.内存泄露&amp;&amp;内存优化"></a>2.内存泄露&amp;&amp;内存优化</h3><blockquote>
+<p>​    WebView解析网页时会申请Native堆内存用于保存页面元素，当页面较复杂时会有很大的内存占用。为了打开新页面时，为了能快速回退，之前页面占用的内存也不会释放。有时浏览十几个网页，都会占用几百兆的内存。这样加载网页较多时，会导致系统不堪重负，最终强制关闭应用，也就是出现应用闪退或重启。</p>
+<p>​    由于占用的都是Native堆内存，所以实际占用的内存大小不会显示在常用的DDMS Heap工具中（这里看到的只是Java虚拟机分配的内存，一般即使Native堆内存已经占用了几百兆，这里显示的还只是几兆或十几兆）。只有使用adb shell中的一些命令比如dumpsys meminfo 包名，或者在程序中使用Debug.getNativeHeapSize()才能看到。</p>
+<p>​    由于WebView的一个BUG，即使它所在的Activity(或者Service)结束也就是onDestroy()之后，或者直接调用WebView.destroy()之后，它所占用这些内存也不会被释放。</p>
+</blockquote>
+<p><strong>解决这个问题最直接的方法是：把使用了WebView的Activity(或者Service)放在单独的进程里。然后在检测到应用占用内存过大有可能被系统干掉或者它所在的Activity(或者Service)结束后，调用System.exit(0)，主动Kill掉进程。由于系统的内存分配是以进程为准的，进程关闭后，系统会自动回收所有内存。</strong></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
+</div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/08/09/Android/WebView总结/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/08/09/Android/WebView总结/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/08/11/Android/跨进程EventBus/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    EventBus跨进程思考
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/08/03/Android/Android的渲染机制/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Android的渲染机制</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/19/Android/学习Binder/" class="title">学习Binder</a></p>
+                            <p class="item-date"><time datetime="2017-08-19T02:25:11.000Z" itemprop="datePublished">2017-08-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/16/Android/项目组件化/" class="title">项目组件化流程</a></p>
+                            <p class="item-date"><time datetime="2017-08-16T02:22:11.000Z" itemprop="datePublished">2017-08-16</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/13/Android/进程回收策略/" class="title">进程回收策略</a></p>
+                            <p class="item-date"><time datetime="2017-08-13T08:22:11.000Z" itemprop="datePublished">2017-08-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/OKHttp/" class="title">OKHttp总结</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/跨进程EventBus/" class="title">EventBus跨进程思考</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java集合/">java集合</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/并发/">并发</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计网/">计网</a><span class="category-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java集合/">java集合</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm/">jvm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发/">并发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计网/">计网</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/java集合/" style="font-size: 10px;">java集合</a> <a href="/tags/jvm/" style="font-size: 20px;">jvm</a> <a href="/tags/并发/" style="font-size: 10px;">并发</a> <a href="/tags/计网/" style="font-size: 10px;">计网</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://blog.yvesluo.cc/">Yves</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://cristianoro7.github.io/">cristianoro</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 kiddot<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://kiddot.github.io/2017/08/09/Android/WebView总结/';
+        
+        this.page.identifier = 'Android/WebView总结';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

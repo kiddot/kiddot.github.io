@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>OKHttp总结 | Share</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="OKHttpOKHttp是什么？ 是一个网络请求库。处理对网络的请求操作。  它做了一些什么操作？（我将从一步步做出一个简易OKHttp的角度来阐述） 首先，先思考没有使用库的情况下，一般是如何进行网络请求的。  接收用户的请求 -&amp;gt; 发出请求 -&amp;gt; 接收响应结果并返回给用户。  这种是最简单的请求情况，但是实际上应用的网络请求比较复杂。因此库的存在就是能有效帮助用户解决网络请求中可能">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OKHttp总结">
+<meta property="og:url" content="https://kiddot.github.io/2017/08/11/Android/OKHttp/index.html">
+<meta property="og:site_name" content="Share">
+<meta property="og:description" content="OKHttpOKHttp是什么？ 是一个网络请求库。处理对网络的请求操作。  它做了一些什么操作？（我将从一步步做出一个简易OKHttp的角度来阐述） 首先，先思考没有使用库的情况下，一般是如何进行网络请求的。  接收用户的请求 -&amp;gt; 发出请求 -&amp;gt; 接收响应结果并返回给用户。  这种是最简单的请求情况，但是实际上应用的网络请求比较复杂。因此库的存在就是能有效帮助用户解决网络请求中可能">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://whvn.cc/4902">
+<meta property="og:updated_time" content="2018-03-05T16:21:01.880Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OKHttp总结">
+<meta name="twitter:description" content="OKHttpOKHttp是什么？ 是一个网络请求库。处理对网络的请求操作。  它做了一些什么操作？（我将从一步步做出一个简易OKHttp的角度来阐述） 首先，先思考没有使用库的情况下，一般是如何进行网络请求的。  接收用户的请求 -&amp;gt; 发出请求 -&amp;gt; 接收响应结果并返回给用户。  这种是最简单的请求情况，但是实际上应用的网络请求比较复杂。因此库的存在就是能有效帮助用户解决网络请求中可能">
+<meta name="twitter:image" content="https://whvn.cc/4902">
+    
+
+    
+        <link rel="alternate" href="/" title="Share" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">Share</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/categories">Categories</a>
+                
+                    <a class="main-nav-link" href="/tags">Tags</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">kiddot</h2>
+            <h3 id="title">Android Developer &amp; Coder</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Guangzhou, China</span>
+            <a id="follow" target="_blank" href="https://github.com/kiddot">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                25
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                5
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/kiddot" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/kiddo1024" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/dekai.liang.94" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://dribbble.com/dribbble" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Android/OKHttp" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            
+	
+		<img src="https://whvn.cc/4902" class="article-banner" />
+	
+
+
+
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            OKHttp总结
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/08/11/Android/OKHttp/">
+            <time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Android/">Android</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="OKHttp"><a href="#OKHttp" class="headerlink" title="OKHttp"></a>OKHttp</h1><h2 id="OKHttp是什么？"><a href="#OKHttp是什么？" class="headerlink" title="OKHttp是什么？"></a>OKHttp是什么？</h2><blockquote>
+<p>是一个网络请求库。处理对网络的请求操作。</p>
+</blockquote>
+<p>它做了一些什么操作？（我将从一步步做出一个简易OKHttp的角度来阐述）</p>
+<p>首先，先思考没有使用库的情况下，一般是如何进行网络请求的。</p>
+<blockquote>
+<p>接收用户的请求 -&gt; 发出请求 -&gt; 接收响应结果并返回给用户。</p>
+</blockquote>
+<p>这种是最简单的请求情况，但是实际上应用的网络请求比较复杂。因此库的存在就是能有效帮助用户解决网络请求中可能出现的问题以及扩展请求的功能提高请求速度等等。</p>
+<p>而OKHttp这个库，就是通过分层设计方法，把请求的流程分为七层。而层次之间的联系通过拦截器和组成链来实现。而且提供了自定义拦截器，用户可以在请求流程中加入自己想要处理的逻辑。例如加入日志打印等。</p>
+<p>在这七层中的处理的，都是根据上层传入的request请求来进行自己的处理包装，然后传递给下一层。而每一层的处理有所不同，但又层层依赖。这种代码的层次风格很适合维护和降低开发难度。</p>
+<h3 id="拦截器层次结构"><a href="#拦截器层次结构" class="headerlink" title="拦截器层次结构"></a>拦截器层次结构</h3><p>假设没有拦截器去一层层包装request请求，可能就直接根据用户传进来的request直接进行连接请求数据了。但是用户的request可能并不是一个规范的http request请求，所以OKHttp会帮用户构建一个规范http request，比如添加一些头部信息，如Content-Length, Transfer-Encoding, User-Agent, Host, Connection, 和 Content-Type等等。除此之外，OKHttp的每一层都做了些什么？</p>
+<ul>
+<li>自定义应用拦截器<ul>
+<li>在这一层用户可以扩展针对请求数据和返回数据进行处理，比如打印返回数据的日志</li>
+</ul>
+</li>
+<li>重试/重定向应用拦截器<ul>
+<li>在这一层准备好后面进行网络连接的一些资源，比如连接池资源等。还提供了进行重试和重定向功能，因为网络环境不稳定情况下，已建立的连接可能会变成不可用状态，所以在这里会进行重试连接。还有一种情况就是，服务器返回了重定向码，在这一层将会<strong>新建一个request重新走一遍整个链</strong></li>
+</ul>
+</li>
+<li>应用转网络的桥接器<ul>
+<li>在这里处理一些网络层特有的Header信息，比如Host属性。而Host属性包括Host、Connection的Keep-Alive、gzip透明压缩、User-Agent描述、Cookie策略等。</li>
+</ul>
+</li>
+<li>缓存拦截器<ul>
+<li>这一层主要是查询、存储和有效检查。存储，在走请求链获取Response时记录cache。查询，根据Request过滤，来查找Cache。有效性检查，判断Cache数据的各项指标是否达到条件。如果这层能查询到有效的cache，将会直接返回数据提高请求速度。</li>
+</ul>
+</li>
+<li>连接拦截器<ul>
+<li>到这一层为止，还没有进行真正的网络连接。它负责准备好请求、连接资源、传输工具、和连接，为连接前做好准备工作。</li>
+</ul>
+</li>
+<li>自定义网络拦截器<ul>
+<li>它和应用拦截器相比，它更能直接监测到在线网络请求的数据交换过程。更加适合做数据检测的自定义功能。可以在这层做的一些扩展有       一、<strong>模拟各种网络情况</strong>：断断续续的网络非常不好模拟，我们可以在网络拦截器层自由设定网络返回值和返回时间，辅助我们检查App在处理网络数据时的健壮性。 二、<strong>模拟数据辅助开发/测试</strong>：指向官网的地址重定向为指向开发测试网址，甚至直接mock返回数据，换掉在线数据，这样可以检测整个网络层的全部功能</li>
+</ul>
+</li>
+<li>在线网络请求拦截器<ul>
+<li>前面所有层，其实都是在为这一层做准备。真正进行连接，请求数据，返回数据的操作就在这一层</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何有效管理请求"><a href="#如何有效管理请求" class="headerlink" title="如何有效管理请求"></a>如何有效管理请求</h3><blockquote>
+<p>请求有同步请求、异步请求</p>
+</blockquote>
+<p>对直接思路就是直接放入Request中处理，但是OKHttp分出两个类来表示，拆分职责。分出一个类来对不同方式的请求进行管理。主要职责：</p>
+<ol>
+<li>存储外界不断传入的 <code>SyncCall</code> 和<code>AsyncCall</code>，如果用户想取消则可以遍历所有的 call 进行 cancel 操作;</li>
+<li>对于 <code>SyncCall</code>，由于它是即时运行的，因此<code>Dispatcher</code> 只需要在 <code>SyncCall</code> 运行前存储进来，在运行结束后移除即可；</li>
+<li>对于 <code>AsyncCall</code>，<code>Dispatcher</code> 首先启动一个 ExecutorService，不断取出 <code>AsyncCall</code> 去进行执行，然后，我们设置最多执行的 request 数量为 64，如果已经有 64 个 request 在执行中，那么就将这个 asyncCall 存入等待区。</li>
+</ol>
+<h3 id="如何确保多个队列之间能顺畅地调度"><a href="#如何确保多个队列之间能顺畅地调度" class="headerlink" title="如何确保多个队列之间能顺畅地调度"></a>如何确保多个队列之间能顺畅地调度</h3><blockquote>
+<p>对于多线程情况下的队列调度，其实就是<strong>数据移动和失败阻塞</strong>的这两个问题。</p>
+</blockquote>
+<h3 id="做了哪些优化"><a href="#做了哪些优化" class="headerlink" title="做了哪些优化"></a>做了哪些优化</h3><p>OkHttp主要针对队列和线程池做了优化：</p>
+<p><strong>循环数组</strong><br>因为Dispatcher中的三个队列需要频繁出栈和入栈，所以采用了性能良好的循环数组ArrayDeque管理队列。</p>
+<p><strong>阻塞队列</strong></p>
+<p>因为Dispatcher自己用队列管理了排队的请求，所以Dispatcher中的线程池其实不需要缓存队列，那么这个线程池的任务其实是尽快地把元素转交给线程池中的io线程，所以采用了容量为0的阻塞队列SynchronousQueue，SynchronousQueue与普通队列不同，不是数据等线程，而是线程等数据，这样每次向SynchronousQueue里传入数据时，都会立即交给一个线程执行，这样可以提高数据得到处理的速度</p>
+<p><strong>控制线程数量</strong></p>
+<p>因为线程本身也会消耗资源，所以每个线程池都需要控制线程数量，OkHttp的线程池更进一步，会针对每个Host主机的请求（避免全都卡死在某个Host上），分别控制线程数上限（5个），具体方法就是遍历所有runningAsyncCall队列中的每个Call，查询每个Call的Host，并做计数。</p>
+<h2 id="我为什么要使用OKHttp？"><a href="#我为什么要使用OKHttp？" class="headerlink" title="我为什么要使用OKHttp？"></a>我为什么要使用OKHttp？</h2><ul>
+<li>volley是一个<strong>简单的异步http库</strong>，仅此而已。缺点是不支持同步，这点会限制开发模式；不能post大数据，所以不适合用来上传文件。</li>
+<li>android-async-http。它是封装的httpClient，而android平台不推荐用HttpClient了，所以这个库已经<strong>不适合android平台</strong>了。</li>
+<li>okhttp是<strong>高性能</strong>的http库，支持同步、异步，而且实现了spdy、http2、websocket协议，api很简洁易用，和volley一样实现了http协议的缓存。picasso就是利用okhttp的缓存机制实现其文件缓存，实现的很优雅，很<strong>正确，</strong>反例就是UIL（universal image loader），自己做的文件缓存，而且不遵守http缓存机制。</li>
+</ul>
+<p>另一方面OKhttp还是用OKIO库，这个库相比原生IO更加高效：</p>
+<ul>
+<li>它对数据进行了分块处理，这样在大数据IO的时候可以以块为单位进行IO，这可以提高IO的吞吐率</li>
+<li>它对这些数据块使用链表进行管理，这可以仅通过移动“指针”就进行数据的管理，而不用真正去处理数据，而且对扩容来说也十分方便</li>
+<li>对闲置的块进行管理，通过一个块池（SegmentPool）的管理，避免系统GC和申请byte时的zero-fill</li>
+<li>其他的还有一些小细节上的优化，比如如果你把一个UTF-8的String转为ByteString，ByteString会保留一份对原来String的引用，这样当你下次 需要decode这个String时，程序通过保留的引用直接返回对应的String，从而避免了转码过程</li>
+</ul>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+    <div class="a2a_kit a2a_default_style">
+    <a class="a2a_dd" href="https://www.addtoany.com/share">Share</a>
+    <span class="a2a_divider"></span>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_google_plus"></a>
+    <a class="a2a_button_pinterest"></a>
+    <a class="a2a_button_tumblr"></a>
+</div>
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+<style>
+    .a2a_menu {
+        border-radius: 4px;
+    }
+    .a2a_menu a {
+        margin: 2px 0;
+        font-size: 14px;
+        line-height: 16px;
+        border-radius: 4px;
+        color: inherit !important;
+        font-family: 'Microsoft Yahei';
+    }
+    #a2apage_dropdown {
+        margin: 10px 0;
+    }
+    .a2a_mini_services {
+        padding: 10px;
+    }
+    a.a2a_i,
+    i.a2a_i {
+        width: 122px;
+        line-height: 16px;
+    }
+    a.a2a_i .a2a_svg,
+    a.a2a_more .a2a_svg {
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        vertical-align: top;
+        background-size: 16px;
+    }
+    a.a2a_i {
+        border: none !important;
+    }
+    a.a2a_menu_show_more_less {
+        margin: 0;
+        padding: 10px 0;
+        line-height: 16px;
+    }
+    .a2a_mini_services:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+    .a2a_mini_services{*+height:1%;}
+</style>
+
+</div>
+
+            
+    
+        <a href="https://kiddot.github.io/2017/08/11/Android/OKHttp/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://kiddot.github.io/2017/08/11/Android/OKHttp/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/08/13/Android/进程回收策略/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    进程回收策略
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/08/11/Android/跨进程EventBus/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">EventBus跨进程思考</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/19/Android/学习Binder/" class="title">学习Binder</a></p>
+                            <p class="item-date"><time datetime="2017-08-19T02:25:11.000Z" itemprop="datePublished">2017-08-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/16/Android/项目组件化/" class="title">项目组件化流程</a></p>
+                            <p class="item-date"><time datetime="2017-08-16T02:22:11.000Z" itemprop="datePublished">2017-08-16</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/13/Android/进程回收策略/" class="title">进程回收策略</a></p>
+                            <p class="item-date"><time datetime="2017-08-13T08:22:11.000Z" itemprop="datePublished">2017-08-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/OKHttp/" class="title">OKHttp总结</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Android/">Android</a></p>
+                            <p class="item-title"><a href="/2017/08/11/Android/跨进程EventBus/" class="title">EventBus跨进程思考</a></p>
+                            <p class="item-date"><time datetime="2017-08-11T08:22:11.000Z" itemprop="datePublished">2017-08-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java集合/">java集合</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/并发/">并发</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计网/">计网</a><span class="category-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java集合/">java集合</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvm/">jvm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/并发/">并发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计网/">计网</a><span class="tag-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/java集合/" style="font-size: 10px;">java集合</a> <a href="/tags/jvm/" style="font-size: 20px;">jvm</a> <a href="/tags/并发/" style="font-size: 10px;">并发</a> <a href="/tags/计网/" style="font-size: 10px;">计网</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://blog.yvesluo.cc/">Yves</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://cristianoro7.github.io/">cristianoro</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 kiddot<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://kiddot.github.io/2017/08/11/Android/OKHttp/';
+        
+        this.page.identifier = 'Android/OKHttp';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'kiddy0916' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
