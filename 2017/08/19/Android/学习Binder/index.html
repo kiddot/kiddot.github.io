@@ -5,20 +5,20 @@
     
     <title>学习Binder | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="学习Binder Binder机制的目的是实现IPC(Inter-Process Communication)，即实现进程间通信。  知识储备1.Linux系统中内存的划分​    在Linux系统中，应用程序都运行在用户空间，而Kernel和驱动都运行在内核空间。用户空间和内核空间若涉及到通信(即数据交互)，两者不能简单地使用指针传递数据，而必须在”内核”中copy_from_user(),co">
+    <meta name="description" content="学习Binder Binder机制的目的是实现IPC(Inter-Process Communication)，即实现进程间通信。  知识储备">
 <meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="学习Binder">
 <meta property="og:url" content="https://kiddot.github.io/2017/08/19/Android/学习Binder/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="学习Binder Binder机制的目的是实现IPC(Inter-Process Communication)，即实现进程间通信。  知识储备1.Linux系统中内存的划分​    在Linux系统中，应用程序都运行在用户空间，而Kernel和驱动都运行在内核空间。用户空间和内核空间若涉及到通信(即数据交互)，两者不能简单地使用指针传递数据，而必须在”内核”中copy_from_user(),co">
+<meta property="og:description" content="学习Binder Binder机制的目的是实现IPC(Inter-Process Communication)，即实现进程间通信。  知识储备">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://whvn.cc/6596">
-<meta property="og:updated_time" content="2018-03-05T16:28:05.052Z">
+<meta property="og:image" content="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6596.jpg">
+<meta property="og:updated_time" content="2018-03-05T16:45:35.315Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="学习Binder">
-<meta name="twitter:description" content="学习Binder Binder机制的目的是实现IPC(Inter-Process Communication)，即实现进程间通信。  知识储备1.Linux系统中内存的划分​    在Linux系统中，应用程序都运行在用户空间，而Kernel和驱动都运行在内核空间。用户空间和内核空间若涉及到通信(即数据交互)，两者不能简单地使用指针传递数据，而必须在”内核”中copy_from_user(),co">
-<meta name="twitter:image" content="https://whvn.cc/6596">
+<meta name="twitter:description" content="学习Binder Binder机制的目的是实现IPC(Inter-Process Communication)，即实现进程间通信。  知识储备">
+<meta name="twitter:image" content="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6596.jpg">
     
 
     
@@ -220,7 +220,7 @@
         
             
 	
-		<img src="https://whvn.cc/6596" class="article-banner" />
+		<img src="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6596.jpg" class="article-banner" />
 	
 
 
@@ -269,7 +269,8 @@
             <h1 id="学习Binder"><a href="#学习Binder" class="headerlink" title="学习Binder"></a>学习Binder</h1><blockquote>
 <p>Binder机制的目的<strong>是实现IPC(Inter-Process Communication)，即实现进程间通信</strong>。</p>
 </blockquote>
-<h2 id="知识储备"><a href="#知识储备" class="headerlink" title="知识储备"></a>知识储备</h2><h3 id="1-Linux系统中内存的划分"><a href="#1-Linux系统中内存的划分" class="headerlink" title="1.Linux系统中内存的划分"></a>1.Linux系统中内存的划分</h3><p>​    在Linux系统中，应用程序都运行在用户空间，而Kernel和驱动都运行在内核空间。用户空间和内核空间若涉及到通信(即数据交互)，两者不能简单地使用指针传递数据，而必须在”内核”中copy_from_user(),copy_to_user(),get_user()或put_user()等函数传递数据。copy_from_user()和get_user()是将内核空间的数据拷贝到用户空间，而copy_to_user()和put_user()则是将用户空间的数据拷贝到内核空间。</p>
+<h2 id="知识储备"><a href="#知识储备" class="headerlink" title="知识储备"></a>知识储备</h2><a id="more"></a>
+<h3 id="1-Linux系统中内存的划分"><a href="#1-Linux系统中内存的划分" class="headerlink" title="1.Linux系统中内存的划分"></a>1.Linux系统中内存的划分</h3><p>​    在Linux系统中，应用程序都运行在用户空间，而Kernel和驱动都运行在内核空间。用户空间和内核空间若涉及到通信(即数据交互)，两者不能简单地使用指针传递数据，而必须在”内核”中copy_from_user(),copy_to_user(),get_user()或put_user()等函数传递数据。copy_from_user()和get_user()是将内核空间的数据拷贝到用户空间，而copy_to_user()和put_user()则是将用户空间的数据拷贝到内核空间。</p>
 <h3 id="2-进程的概念"><a href="#2-进程的概念" class="headerlink" title="2.进程的概念"></a>2.进程的概念</h3><p>​    进程可以说是程序运行在上面的抽象CPU，它拥有独立的内存单位，是系统进行资源分配和调度的基本单位。对Linux系统来说，每个用户空间运行的应用程序都可以看成一个进程。不同进程在不同内存当中。</p>
 <h3 id="3-代理模式-远程代理"><a href="#3-代理模式-远程代理" class="headerlink" title="3.代理模式-远程代理"></a>3.代理模式-远程代理</h3><p>​    远程代理是最经典的代理模式之一，远程代理负责与远程JVM通信，以实现本地调用者与远程被调用者之间的正常交互。</p>
 <p><img src="http://images.cnitblog.com/blog/610080/201410/042203005033153.jpg" alt="img"></p>
@@ -499,7 +500,7 @@
                             <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6596.jpg)" alt="学习Binder" class="thumbnail-image"></span>
     
 </a>
 
@@ -518,7 +519,7 @@
                             <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6585.png)" alt="项目组件化流程" class="thumbnail-image"></span>
     
 </a>
 
@@ -537,7 +538,7 @@
                             <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-4959.jpg)" alt="进程回收策略" class="thumbnail-image"></span>
     
 </a>
 
@@ -556,7 +557,7 @@
                             <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-4902.jpg)" alt="OKHttp总结" class="thumbnail-image"></span>
     
 </a>
 
@@ -575,7 +576,7 @@
                             <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-5697.jpg)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
     
 </a>
 

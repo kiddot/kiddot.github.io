@@ -5,20 +5,20 @@
     
     <title>EventBus跨进程思考 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="场景设想与分析 如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓  ​    主进程中创建一个本地服务LocalService，子进程中床架一个远程服务RemoteService，通信之前，先从业务模块通过EventBus post一个Event到本地LocalService，本地Service通过ServiceConnection与RemoteServic">
+    <meta name="description" content="场景设想与分析 如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓">
 <meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="EventBus跨进程思考">
 <meta property="og:url" content="https://kiddot.github.io/2017/08/11/Android/跨进程EventBus/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="场景设想与分析 如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓  ​    主进程中创建一个本地服务LocalService，子进程中床架一个远程服务RemoteService，通信之前，先从业务模块通过EventBus post一个Event到本地LocalService，本地Service通过ServiceConnection与RemoteServic">
+<meta property="og:description" content="场景设想与分析 如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://whvn.cc/5697">
-<meta property="og:updated_time" content="2018-03-05T16:24:26.519Z">
+<meta property="og:image" content="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-5697.jpg">
+<meta property="og:updated_time" content="2018-03-05T16:44:51.174Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EventBus跨进程思考">
-<meta name="twitter:description" content="场景设想与分析 如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓  ​    主进程中创建一个本地服务LocalService，子进程中床架一个远程服务RemoteService，通信之前，先从业务模块通过EventBus post一个Event到本地LocalService，本地Service通过ServiceConnection与RemoteServic">
-<meta name="twitter:image" content="https://whvn.cc/5697">
+<meta name="twitter:description" content="场景设想与分析 如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓">
+<meta name="twitter:image" content="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-5697.jpg">
     
 
     
@@ -220,7 +220,7 @@
         
             
 	
-		<img src="https://whvn.cc/5697" class="article-banner" />
+		<img src="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-5697.jpg" class="article-banner" />
 	
 
 
@@ -269,6 +269,7 @@
             <h1 id="场景设想与分析"><a href="#场景设想与分析" class="headerlink" title="场景设想与分析"></a>场景设想与分析</h1><blockquote>
 <p>如果项目业务有一种场景需要使用EventBus进行跨进程通信，要怎么做？可能你会这样做↓</p>
 </blockquote>
+<a id="more"></a>
 <p>​    主进程中创建一个本地服务LocalService，子进程中床架一个远程服务RemoteService，通信之前，先从业务模块通过EventBus post一个Event到本地LocalService，本地Service通过ServiceConnection与RemoteService绑定，本地LocalService在ServiceConnection的连接上将AIDL接口封装为一个Messenger，通过Messenger向RemoteService发送Message，而Event就是被包裹在Message中的Bundle里。</p>
 <p>这样的做法缺点在于：</p>
 <ul>
@@ -408,7 +409,7 @@
                             <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6596.jpg)" alt="学习Binder" class="thumbnail-image"></span>
     
 </a>
 
@@ -427,7 +428,7 @@
                             <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6585.png)" alt="项目组件化流程" class="thumbnail-image"></span>
     
 </a>
 
@@ -446,7 +447,7 @@
                             <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-4959.jpg)" alt="进程回收策略" class="thumbnail-image"></span>
     
 </a>
 
@@ -465,7 +466,7 @@
                             <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-4902.jpg)" alt="OKHttp总结" class="thumbnail-image"></span>
     
 </a>
 
@@ -484,7 +485,7 @@
                             <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-5697.jpg)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
     
 </a>
 

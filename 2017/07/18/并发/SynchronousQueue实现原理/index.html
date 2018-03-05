@@ -5,20 +5,20 @@
     
     <title>SynchronousQueue实现原理 | Share</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="SynchronousQueue实现原理原文地址:http://blog.csdn.net/yanyan19880509/article/details/52562039 前言SynchronousQueue是一个比较特别的队列，由于在线程池方面有所应用，为了更好的理解线程池的实现原理，笔者花了些时间学习了一下该队列源码(JDK1.8)，此队列源码中充斥着大量的CAS语句，理解起来是有些难度的，为">
+    <meta name="description" content="SynchronousQueue实现原理">
 <meta name="keywords" content="并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SynchronousQueue实现原理">
 <meta property="og:url" content="https://kiddot.github.io/2017/07/18/并发/SynchronousQueue实现原理/index.html">
 <meta property="og:site_name" content="Share">
-<meta property="og:description" content="SynchronousQueue实现原理原文地址:http://blog.csdn.net/yanyan19880509/article/details/52562039 前言SynchronousQueue是一个比较特别的队列，由于在线程池方面有所应用，为了更好的理解线程池的实现原理，笔者花了些时间学习了一下该队列源码(JDK1.8)，此队列源码中充斥着大量的CAS语句，理解起来是有些难度的，为">
+<meta property="og:description" content="SynchronousQueue实现原理">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://whvn.cc/627114">
-<meta property="og:updated_time" content="2018-03-05T15:59:48.077Z">
+<meta property="og:image" content="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-627114.jpg">
+<meta property="og:updated_time" content="2018-03-05T16:46:30.256Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SynchronousQueue实现原理">
-<meta name="twitter:description" content="SynchronousQueue实现原理原文地址:http://blog.csdn.net/yanyan19880509/article/details/52562039 前言SynchronousQueue是一个比较特别的队列，由于在线程池方面有所应用，为了更好的理解线程池的实现原理，笔者花了些时间学习了一下该队列源码(JDK1.8)，此队列源码中充斥着大量的CAS语句，理解起来是有些难度的，为">
-<meta name="twitter:image" content="https://whvn.cc/627114">
+<meta name="twitter:description" content="SynchronousQueue实现原理">
+<meta name="twitter:image" content="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-627114.jpg">
     
 
     
@@ -220,7 +220,7 @@
         
             
 	
-		<img src="https://whvn.cc/627114" class="article-banner" />
+		<img src="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-627114.jpg" class="article-banner" />
 	
 
 
@@ -266,7 +266,8 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="SynchronousQueue实现原理"><a href="#SynchronousQueue实现原理" class="headerlink" title="SynchronousQueue实现原理"></a>SynchronousQueue实现原理</h1><p>原文地址:<a href="http://blog.csdn.net/yanyan19880509/article/details/52562039" target="_blank" rel="noopener">http://blog.csdn.net/yanyan19880509/article/details/52562039</a></p>
+            <h1 id="SynchronousQueue实现原理"><a href="#SynchronousQueue实现原理" class="headerlink" title="SynchronousQueue实现原理"></a>SynchronousQueue实现原理</h1><a id="more"></a>
+<p>原文地址:<a href="http://blog.csdn.net/yanyan19880509/article/details/52562039" target="_blank" rel="noopener">http://blog.csdn.net/yanyan19880509/article/details/52562039</a></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>SynchronousQueue是一个比较特别的队列，由于在线程池方面有所应用，为了更好的理解线程池的实现原理，笔者花了些时间学习了一下该队列源码(JDK1.8)，此队列源码中充斥着大量的CAS语句，理解起来是有些难度的，为了方便日后回顾，本篇文章会以简洁的图形化方式展示该队列底层的实现原理。</p>
 <h1 id="SynchronousQueue简单使用"><a href="#SynchronousQueue简单使用" class="headerlink" title="SynchronousQueue简单使用"></a>SynchronousQueue简单使用</h1><p>经典的生产者-消费者模式，操作流程是这样的：</p>
 <p>有多个生产者，可以并发生产产品，把产品置入队列中，如果队列满了，生产者就会阻塞；</p>
@@ -426,7 +427,7 @@
                             <a href="/2017/08/19/Android/学习Binder/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/6596)" alt="学习Binder" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6596.jpg)" alt="学习Binder" class="thumbnail-image"></span>
     
 </a>
 
@@ -445,7 +446,7 @@
                             <a href="/2017/08/16/Android/项目组件化/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/6585)" alt="项目组件化流程" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-6585.png)" alt="项目组件化流程" class="thumbnail-image"></span>
     
 </a>
 
@@ -464,7 +465,7 @@
                             <a href="/2017/08/13/Android/进程回收策略/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/4959)" alt="进程回收策略" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-4959.jpg)" alt="进程回收策略" class="thumbnail-image"></span>
     
 </a>
 
@@ -483,7 +484,7 @@
                             <a href="/2017/08/11/Android/OKHttp/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/4902)" alt="OKHttp总结" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-4902.jpg)" alt="OKHttp总结" class="thumbnail-image"></span>
     
 </a>
 
@@ -502,7 +503,7 @@
                             <a href="/2017/08/11/Android/跨进程EventBus/" class="thumbnail">
     
     
-        <span style="background-image:url(https://whvn.cc/5697)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
+        <span style="background-image:url(https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-5697.jpg)" alt="EventBus跨进程思考" class="thumbnail-image"></span>
     
 </a>
 
